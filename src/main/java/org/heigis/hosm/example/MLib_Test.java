@@ -39,22 +39,27 @@ import java.util.Map;
 
 /**
  * Created by John on 1/16/17.
- *
  */
 public class MLib_Test {
     public static void main(String args[]) throws URISyntaxException {
+        String dir = null;
+        if (args.length == 0) {
+            dir = MLib_Test.class.getResource("/").toURI().getPath() + "../../";
+        } else {
+            dir = args[0];
+        }
         SparkConf sparkConf = new SparkConf().setAppName("SVM Classifier Example")
                 .setMaster("local");
+
         JavaSparkContext jsc = new JavaSparkContext(sparkConf);
-        //classification_test1(jsc);
-        //classification_test2(jsc);
-        classification_test3(jsc);
-        //regression_test1(jsc);
+        //classification_test1(jsc,dir);
+        //classification_test2(jsc,dir);
+        classification_test3(jsc, dir);
+        //regression_test1(jsc,dir);
         jsc.stop();
     }
 
-    public static void regression_test1(JavaSparkContext jsc) throws URISyntaxException {
-        String dir = MLib_Test.class.getResource("/").toURI().getPath() + "../../";
+    public static void regression_test1(JavaSparkContext jsc, String dir) throws URISyntaxException {
         String path = dir + "src/main/resources/lpsa.data";
         JavaRDD<String> data = jsc.textFile(path);
         JavaRDD<LabeledPoint> parsedData = data.map(
@@ -89,7 +94,7 @@ public class MLib_Test {
         double MSE = new JavaDoubleRDD(valuesAndPreds.map(
                 new Function<Tuple2<Double, Double>, Object>() {
                     public Object call(Tuple2<Double, Double> pair) {
-                        System.out.println(pair._1()-pair._2());
+                        System.out.println(pair._1() - pair._2());
                         return Math.pow(pair._1() - pair._2(), 2.0);
                     }
                 }
@@ -98,8 +103,7 @@ public class MLib_Test {
 
     }
 
-    public static void classification_test2(JavaSparkContext jsc) throws URISyntaxException {
-        String dir = MLib_Test.class.getResource("/").toURI().getPath() + "../../";
+    public static void classification_test2(JavaSparkContext jsc, String dir) throws URISyntaxException {
         String path = dir + "src/main/resources/sample_libsvm_data.txt";
         JavaRDD<LabeledPoint> data = MLUtils.loadLibSVMFile(jsc.sc(), path).toJavaRDD();
         // Split initial RDD into two... [60% training data, 40% testing data].
@@ -135,8 +139,8 @@ public class MLib_Test {
 //        model.save(jsc.sc(), "file:///Users/John/Downloads/myModel");
 //        SVMModel sameModel = SVMModel.load(jsc.sc(), "file:///Users/John/Downloads/myModel");
     }
-    public static void classification_test1(JavaSparkContext jsc) throws URISyntaxException {
-        String dir = MLib_Test.class.getResource("/").toURI().getPath() + "../../";
+
+    public static void classification_test1(JavaSparkContext jsc, String dir) throws URISyntaxException {
         String path = dir + "src/main/resources/sample_libsvm_data.txt";
         JavaRDD<LabeledPoint> data = MLUtils.loadLibSVMFile(jsc.sc(), path).toJavaRDD();
         JavaRDD<LabeledPoint>[] splits = data.randomSplit(new double[]{0.6, 0.4}, 11L);
@@ -170,8 +174,7 @@ public class MLib_Test {
         //              dir + "src/main/resources/myModelPath");
     }
 
-    public static void classification_test3(JavaSparkContext jsc) throws URISyntaxException {
-        String dir = MLib_Test.class.getResource("/").toURI().getPath() + "../../";
+    public static void classification_test3(JavaSparkContext jsc, String dir) throws URISyntaxException {
         String path = dir + "src/main/resources/sample_libsvm_data.txt";
         JavaRDD<LabeledPoint> data = MLUtils.loadLibSVMFile(jsc.sc(), path).toJavaRDD();
         JavaRDD<LabeledPoint>[] splits = data.randomSplit(new double[]{0.7, 0.3});
