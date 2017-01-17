@@ -1,6 +1,5 @@
 package org.heigis.hosm.example;
 
-
 import org.apache.avro.io.parsing.Symbol;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaDoubleRDD;
