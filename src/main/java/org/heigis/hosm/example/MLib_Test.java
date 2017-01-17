@@ -50,7 +50,7 @@ public class MLib_Test {
         //classification_test2(jsc);
         classification_test3(jsc);
         //regression_test1(jsc);
-
+        jsc.stop();
     }
 
     public static void regression_test1(JavaSparkContext jsc) throws URISyntaxException {
