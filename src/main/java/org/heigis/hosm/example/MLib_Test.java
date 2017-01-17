@@ -45,7 +45,7 @@ public class MLib_Test {
         String dir = null;
         SparkConf sparkConf = null;
         if (args.length == 0) {
-            dir = MLib_Test.class.getResource("/").toURI().getPath() + "../../";
+            dir = MLib_Test.class.getResource("/").toURI().getPath() + "../../src/main/resources/";
             sparkConf = new SparkConf().setAppName("SVM Classifier Example").setMaster("local");
         } else {
             dir = args[0];
@@ -53,15 +53,15 @@ public class MLib_Test {
         }
 
         JavaSparkContext jsc = new JavaSparkContext(sparkConf);
-        //classification_test1(jsc,dir);
+        classification_test1(jsc,dir);
         //classification_test2(jsc,dir);
-        classification_test3(jsc, dir);
+        //classification_test3(jsc, dir);
         //regression_test1(jsc,dir);
         jsc.stop();
     }
 
     public static void regression_test1(JavaSparkContext jsc, String dir) throws URISyntaxException {
-        String path = dir + "src/main/resources/lpsa.data";
+        String path = dir + "lpsa.data";
         JavaRDD<String> data = jsc.textFile(path);
         JavaRDD<LabeledPoint> parsedData = data.map(
                 new Function<String, LabeledPoint>() {
@@ -105,7 +105,7 @@ public class MLib_Test {
     }
 
     public static void classification_test2(JavaSparkContext jsc, String dir) throws URISyntaxException {
-        String path = dir + "src/main/resources/sample_libsvm_data.txt";
+        String path = dir + "sample_libsvm_data.txt";
         JavaRDD<LabeledPoint> data = MLUtils.loadLibSVMFile(jsc.sc(), path).toJavaRDD();
         // Split initial RDD into two... [60% training data, 40% testing data].
         JavaRDD<LabeledPoint> training = data.sample(false, 0.7, 11L);
@@ -142,7 +142,7 @@ public class MLib_Test {
     }
 
     public static void classification_test1(JavaSparkContext jsc, String dir) throws URISyntaxException {
-        String path = dir + "src/main/resources/sample_libsvm_data.txt";
+        String path = dir + "sample_libsvm_data.txt";
         JavaRDD<LabeledPoint> data = MLUtils.loadLibSVMFile(jsc.sc(), path).toJavaRDD();
         JavaRDD<LabeledPoint>[] splits = data.randomSplit(new double[]{0.6, 0.4}, 11L);
         JavaRDD<LabeledPoint> training = splits[0].cache();
@@ -170,13 +170,13 @@ public class MLib_Test {
         System.out.println("Recall = " + recall);
 
         // Save and load model
-//        model.save(jsc.sc(), dir + "src/main/resources/myModelPath");
-        //       LogisticRegressionModel sameModel = LogisticRegressionModel.load(jsc.sc(),
-        //              dir + "src/main/resources/myModelPath");
+        //model.save(jsc.sc(), dir + "model");
+        //LogisticRegressionModel sameModel = LogisticRegressionModel.load(jsc.sc(),
+         //             dir + "model");
     }
 
     public static void classification_test3(JavaSparkContext jsc, String dir) throws URISyntaxException {
-        String path = dir + "src/main/resources/sample_libsvm_data.txt";
+        String path = dir + "sample_libsvm_data.txt";
         JavaRDD<LabeledPoint> data = MLUtils.loadLibSVMFile(jsc.sc(), path).toJavaRDD();
         JavaRDD<LabeledPoint>[] splits = data.randomSplit(new double[]{0.7, 0.3});
         JavaRDD<LabeledPoint> trainingData = splits[0];
