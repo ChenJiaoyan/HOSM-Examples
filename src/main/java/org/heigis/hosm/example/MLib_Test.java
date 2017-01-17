@@ -18,6 +18,7 @@ import org.apache.spark.mllib.evaluation.MulticlassMetrics;
 import org.apache.spark.mllib.feature.HashingTF;
 import org.apache.spark.mllib.linalg.Vector;
 import org.apache.spark.mllib.linalg.Vectors;
+import org.apache.spark.mllib.linalg.distributed.RowMatrix;
 import org.apache.spark.mllib.regression.LabeledPoint;
 
 import org.apache.spark.mllib.regression.LabeledPoint;
@@ -52,11 +53,33 @@ public class MLib_Test {
         }
 
         JavaSparkContext jsc = new JavaSparkContext(sparkConf);
-        classification_test1(jsc,dir);
+        //classification_test1(jsc,dir);
         //classification_test2(jsc,dir);
         //classification_test3(jsc, dir);
         //regression_test1(jsc,dir);
+        data_type_test(jsc,dir);
         jsc.stop();
+    }
+
+    public static void data_type_test(JavaSparkContext jsc, String dir){
+        String path = dir + "lpsa.data";
+        JavaRDD<String> data = jsc.textFile(path);
+        JavaRDD<Vector> parsedData = data.map(
+                new Function<String, Vector>() {
+                    public Vector call(String line) {
+                        String[] parts = line.split(",");
+                        String[] features = parts[1].split(" ");
+                        double[] v = new double[features.length];
+                        for (int i = 0; i < features.length - 1; i++)
+                            v[i] = Double.parseDouble(features[i]);
+                        return Vectors.dense(v);
+                    }
+                }
+        );
+        RowMatrix mat = new RowMatrix(parsedData.rdd());
+        long m = mat.numRows();
+        long n = mat.numCols();
+        System.out.printf("(%d, %d)",m,n);
     }
 
     public static void regression_test1(JavaSparkContext jsc, String dir) throws URISyntaxException {
