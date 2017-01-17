@@ -43,14 +43,15 @@ import java.util.Map;
 public class MLib_Test {
     public static void main(String args[]) throws URISyntaxException {
         String dir = null;
+        SparkConf sparkConf = null;
         if (args.length == 0) {
             dir = MLib_Test.class.getResource("/").toURI().getPath() + "../../";
+            sparkConf = new SparkConf().setAppName("SVM Classifier Example").setMaster("local");
         } else {
             dir = args[0];
+            sparkConf = new SparkConf().setAppName("SVM Classifier Example");
         }
-        SparkConf sparkConf = new SparkConf().setAppName("SVM Classifier Example");
 
-        //SparkConf sparkConf = new SparkConf().setAppName("SVM Classifier Example").setMaster("local");
         JavaSparkContext jsc = new JavaSparkContext(sparkConf);
         //classification_test1(jsc,dir);
         //classification_test2(jsc,dir);
