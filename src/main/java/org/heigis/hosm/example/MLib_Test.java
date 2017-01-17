@@ -48,9 +48,9 @@ public class MLib_Test {
         } else {
             dir = args[0];
         }
-        SparkConf sparkConf = new SparkConf().setAppName("SVM Classifier Example")
-                .setMaster("local");
+        SparkConf sparkConf = new SparkConf().setAppName("SVM Classifier Example");
 
+        //SparkConf sparkConf = new SparkConf().setAppName("SVM Classifier Example").setMaster("local");
         JavaSparkContext jsc = new JavaSparkContext(sparkConf);
         //classification_test1(jsc,dir);
         //classification_test2(jsc,dir);
