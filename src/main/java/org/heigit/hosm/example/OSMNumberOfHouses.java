@@ -207,7 +207,7 @@ public class OSMNumberOfHouses {
             List<Long> timestamps = Arrays.asList(formatter.parse("20170101").getTime(),
                     formatter.parse("20160101").getTime(), formatter.parse("20150101").getTime(),
                     formatter.parse("20140101").getTime(),formatter.parse("20130101").getTime(),
-                    formatter.parse("20120101").getTime());
+                    formatter.parse("20120101").getTime(), formatter.parse("20120102").getTime());
 
             WKTReader r = new WKTReader();
             // http://arthur-e.github.io/Wicket/sandbox-gmaps3.html
