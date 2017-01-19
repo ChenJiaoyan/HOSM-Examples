@@ -194,5 +194,8 @@
     <orderEntry type="library" name="Maven: org.apache.ignite:ignite-indexing:1.7.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.lucene:lucene-core:3.5.0" level="project" />
     <orderEntry type="library" name="Maven: com.h2database:h2:1.4.191" level="project" />
+    <orderEntry type="library" name="Maven: org.heigit.bigspatialdata:osm-ignite-import:1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.ignite:ignite-geospatial:1.7.0" level="project" />
+    <orderEntry type="library" name="Maven: com.vividsolutions:jts:1.13" level="project" />
   </component>
 </module>

@@ -151,15 +151,11 @@ public class Client {
 	public static void main(String[] args) throws ParseException, IgniteCheckedException, URISyntaxException {
 		Ignition.setClientMode(true);
         String dir = MLib_Test.class.getResource("/").toURI().getPath() + "../../";
-		File f = new File(dir + "ignite.xml");
-        System.out.println(f.exists());
 		IgniteConfiguration icfg = IgnitionEx.loadConfiguration(dir + "ignite.xml").getKey();
 		
 		try(Ignite ignite = Ignition.start(icfg)){
 			
 			IgniteCompute compute = ignite.compute(ignite.cluster().forRemotes());
-			
-			
 
 			// Print out hello message on remote nodes in projection.
 			//compute.broadcast(new MyBroadcast());
