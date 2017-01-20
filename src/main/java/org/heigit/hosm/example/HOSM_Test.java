@@ -184,12 +184,12 @@ public class HOSM_Test {
     }
 
     public static void main(String[] args) throws IgniteCheckedException, ParseException, com.vividsolutions.jts.io.ParseException {
-        System.out.println("############## test1 ##############");
-        test1();
-        System.out.println("############## test2 ##############");
+        //System.out.println("############## test1 ##############");
+        //test1();
+        //System.out.println("############## test2 ##############");
         //test2();
-        //System.out.println("############## test3 ##############");
-        //test3();
+        System.out.println("############## test3 ##############");
+        test3();
         //System.out.println("############## test4 ##############");
         //test4();
     }
@@ -236,7 +236,7 @@ public class HOSM_Test {
             for (int i = 0; i < rows.size(); i++) {
                 System.out.printf("%s, %s, %s \n", rows.get(i).get(0), rows.get(i).get(1),
                         Arrays.toString((int []) rows.get(i).get(2)));
-        //        System.out.printf("%s \n", Arrays.toString((String []) rows.get(i).get(3)));
+                System.out.printf("%s \n", Arrays.toString((String []) rows.get(i).get(3)));
             }
         }
     }
