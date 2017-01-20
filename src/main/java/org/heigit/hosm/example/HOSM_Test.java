@@ -302,11 +302,11 @@ public class HOSM_Test {
 
         IgniteConfiguration icfg = IgnitionEx.loadConfiguration("ignite.xml").getKey();
 
-        String tag = "building";
+        //String tag = "building";
         //String tag = "toilets";
         //String tag = "park";
         //String tag = "traffic_sign";
-        //String tag = "atm";
+        String tag = "atm";
 
         try (Ignite ignite = Ignition.start(icfg)) {
             IgniteCache<Integer, OSMTag> cacheTags = ignite.cache("osm_tags");
@@ -329,8 +329,10 @@ public class HOSM_Test {
             // http://arthur-e.github.io/Wicket/sandbox-gmaps3.html
 //          Geometry bbox = r.read(
 //                    "POLYGON((12.357822060585022 45.42796074630555,12.358822524547577 45.42796074630555,12.358822524547577 45.427420498069445,12.357822060585022 45.427420498069445,12.357822060585022 45.42796074630555))");
+            //Geometry bbox = r.read(
+             //       "POLYGON((12.310524 45.445372,12.347603 45.444649,12.349663 45.427303,12.304344 45.428026,12.310524 45.445372))");
             Geometry bbox = r.read(
-                    "POLYGON((12.310524 45.445372,12.347603 45.444649,12.349663 45.427303,12.304344 45.428026,12.310524 45.445372))");
+                   " POLYGON((12.297821044921875 45.45174687098183,12.371635437011719 45.45174687098183,12.371635437011719 45.4187415580181,12.297821044921875 45.4187415580181,12.297821044921875 45.45174687098183))");
 
             MyJobOption option = new MyJobOption(timestamps, bbox, buildingsKey);
 
