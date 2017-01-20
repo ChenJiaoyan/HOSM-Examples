@@ -198,12 +198,12 @@ public class HOSM_Test {
         IgniteConfiguration icfg = IgnitionEx.loadConfiguration("ignite.xml").getKey();
 
         try (Ignite ignite = Ignition.start(icfg)) {
-            IgniteCache<Integer, OSMUser> cacheUser = ignite.cache("osm_user");
-            List<List<?>> rows = cacheUser
-                    .query(new SqlFieldsQuery("select _key from OSMUser")).getAll();
+            IgniteCache<Integer, OSMUser> cacheNode = ignite.cache("osm_node");
+            List<List<?>> rows = cacheNode
+                    .query(new SqlFieldsQuery("select _key from OSMNode")).getAll();
 
             if (rows == null || rows.isEmpty()) {
-                System.err.println("User not found!");
+                System.err.println("Node not found!");
                 return;
             }
 
@@ -223,14 +223,13 @@ public class HOSM_Test {
         try (Ignite ignite = Ignition.start(icfg)) {
             IgniteCache<Integer, OSMTag> cacheTags = ignite.cache("osm_tags");
             List<List<?>> rows = cacheTags
-                    .query(new SqlFieldsQuery("select _key from OSMTag")).getAll();
+                    .query(new SqlFieldsQuery("select * from OSMTag")).getAll();
 
             if (rows == null || rows.isEmpty()) {
                 System.err.println("Tags with key building not found!");
                 return;
             }
 
-            int buildingsKey = ((Integer) rows.get(0).get(0)).intValue();
             for(int i=0;i<rows.size();i++){
                 System.out.println(rows.get(i));
             }
