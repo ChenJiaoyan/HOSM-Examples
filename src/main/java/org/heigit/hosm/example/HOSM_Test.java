@@ -311,7 +311,7 @@ public class HOSM_Test {
         //String tag = "park";
         //String tag = "traffic_sign";
         //String tag = "atm";
-        String tag = "surface";
+        String tag = "route";
 
         try (Ignite ignite = Ignition.start(icfg)) {
             IgniteCache<Integer, OSMTag> cacheTags = ignite.cache("osm_tags");
