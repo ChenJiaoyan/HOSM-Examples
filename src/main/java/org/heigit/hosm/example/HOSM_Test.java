@@ -115,7 +115,7 @@ public class HOSM_Test {
 
                 }
             }
-
+            /*
             IgniteCache<AffinityKey<Long>, OSHWay> cacheWay = ignite.cache("osm_way");
             // search for all ways within a given bounding box;
             SqlQuery<AffinityKey<Long>, OSHWay> sqlWay = new SqlQuery<>(OSHWay.class, "BoundingBox && ?");
@@ -148,6 +148,7 @@ public class HOSM_Test {
                     }
                 }
             }
+            */
             return new MyJobResult(result);
         }
 
