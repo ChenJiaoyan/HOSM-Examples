@@ -133,7 +133,7 @@ public class HOSM_Test {
                         Long timestamp = timestampWay.getKey();
                         OSMWay way = timestampWay.getValue();
                         if (hasKey(way.getTags(), option.tagKey)) {
-
+                            System.out.printf("%s \n", Arrays.toString(way.getTags()));
                             // TODO compute geometry of the way and check it
                             // again against the boundingbox
                             // Geometry g = getGeometry(way);
@@ -329,7 +329,7 @@ public class HOSM_Test {
 
         IgniteConfiguration icfg = IgnitionEx.loadConfiguration("ignite.xml").getKey();
 
-        String tag = "Building";
+        String tag = "building";
         //String tag = "toilets";
         //String tag = "park";
         //String tag = "traffic_sign";
@@ -347,6 +347,7 @@ public class HOSM_Test {
             }
 
             int buildingsKey = ((Integer) rows.get(0).get(0)).intValue();
+            System.out.printf("key: %d \n" + buildingsKey);
 
             SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
             List<Long> timestamps = Arrays.asList(formatter.parse("20170101").getTime(),
