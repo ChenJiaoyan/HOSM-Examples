@@ -343,7 +343,7 @@ public class HOSM_Test {
         try (Ignite ignite = Ignition.start(icfg)) {
             IgniteCache<Integer, OSMTag> cacheTags = ignite.cache("osm_tags");
             List<List<?>> rows = cacheTags
-                    .query(new SqlFieldsQuery("select _key from OSMTag where key = ?").setArgs(tag)).getAll();
+                    .query(new SqlFieldsQuery("select _key,values from OSMTag where key = ?").setArgs(tag)).getAll();
             if (rows == null || rows.isEmpty()) {
                 System.err.println("Tags with key building not found!");
                 return;
@@ -352,9 +352,7 @@ public class HOSM_Test {
             int buildingsKey = ((Integer) rows.get(0).get(0)).intValue();
             System.out.printf("tag key: %d \n", buildingsKey);
 
-            rows = cacheTags
-                    .query(new SqlFieldsQuery("select key,number,numbers,values from OSMTag where key = ?").setArgs(tag)).getAll();
-            Object [] values = (Object[]) rows.get(0).get(3);
+            Object [] values = (Object[]) rows.get(0).get(1);
             for(int i=0;i<values.length;i++){
                 if(((String)values[i]).equals(tag_v)){
                     tag_v_n = i;
