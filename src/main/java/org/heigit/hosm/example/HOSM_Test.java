@@ -191,6 +191,30 @@ public class HOSM_Test {
         test2();
         System.out.println("############## test3 ##############");
         test3();
+        System.out.println("############## test4 ##############");
+        test4();
+    }
+
+    public static void test4() throws IgniteCheckedException {
+        Ignition.setClientMode(true);
+
+        IgniteConfiguration icfg = IgnitionEx.loadConfiguration("ignite.xml").getKey();
+
+        try (Ignite ignite = Ignition.start(icfg)) {
+            //IgniteCache<AffinityKey<Long>, OSMNode> cacheNode = ignite.cache("osm_node");
+            IgniteCache<Integer, OSMWay> cacheWays = ignite.cache("osm_way");
+            List<List<?>> rows = cacheWays
+                    .query(new SqlFieldsQuery("select version from OSMWay")).getAll();
+
+            if (rows == null || rows.isEmpty()) {
+                System.err.println("Way not found!");
+                return;
+            }
+
+            for (int i = 0; i < rows.size(); i++) {
+                System.out.println(rows.get(i));
+            }
+        }
     }
 
     public static void test3() throws IgniteCheckedException {
@@ -199,9 +223,10 @@ public class HOSM_Test {
         IgniteConfiguration icfg = IgnitionEx.loadConfiguration("ignite.xml").getKey();
 
         try (Ignite ignite = Ignition.start(icfg)) {
-            IgniteCache<AffinityKey<Long>, OSMNode> cacheNode = ignite.cache("osm_node");
-            List<List<?>> rows = cacheNode
-                    .query(new SqlFieldsQuery("select version from OSMNode")).getAll();
+            //IgniteCache<AffinityKey<Long>, OSMNode> cacheNode = ignite.cache("osm_node");
+            IgniteCache<Integer, OSMTag> cacheTags = ignite.cache("osm_tags");
+            List<List<?>> rows = cacheTags
+                    .query(new SqlFieldsQuery("select version from OSMTag")).getAll();
 
             if (rows == null || rows.isEmpty()) {
                 System.err.println("Node not found!");
