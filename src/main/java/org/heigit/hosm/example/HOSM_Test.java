@@ -213,7 +213,7 @@ public class HOSM_Test {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
             for (int i = 0; i < rows.size(); i++) {
                 OSHNode oshn = (OSHNode) rows.get(i).get(0);
-                System.out.printf("lat: %d, lon: %d, version: %d", oshn.getLatitude(),oshn.getLongitude(),
+                System.out.printf("lat: %d, lon: %d, version: %d \n", oshn.getLatitude(),oshn.getLongitude(),
                         oshn.getVersion(), formatter.format(new Date(oshn.getTimestamp())));
             }
         }
