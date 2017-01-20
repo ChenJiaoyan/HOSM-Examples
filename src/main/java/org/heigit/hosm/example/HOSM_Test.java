@@ -276,7 +276,8 @@ public class HOSM_Test {
         IgniteConfiguration icfg = IgnitionEx.loadConfiguration("ignite.xml").getKey();
 
         //String tag = "building";
-        String tag = "toilets";
+        //String tag = "toilets";
+        String tag = "park";
 
         try (Ignite ignite = Ignition.start(icfg)) {
             IgniteCache<Integer, OSMTag> cacheTags = ignite.cache("osm_tags");
