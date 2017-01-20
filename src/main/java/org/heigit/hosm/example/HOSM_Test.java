@@ -36,6 +36,7 @@ import org.apache.ignite.internal.IgnitionEx;
 import org.apache.ignite.resources.IgniteInstanceResource;
 import org.heigit.bigspatialdata.osh.ignite.model.osh.OSHNode;
 import org.heigit.bigspatialdata.osh.ignite.model.osh.OSHWay;
+import org.heigit.bigspatialdata.osh.ignite.model.osm.OSMNode;
 import org.heigit.bigspatialdata.osh.ignite.model.osm.OSMTag;
 import org.heigit.bigspatialdata.osh.ignite.model.osm.OSMUser;
 import org.heigit.bigspatialdata.osh.ignite.model.osm.OSMWay;
@@ -198,9 +199,9 @@ public class HOSM_Test {
         IgniteConfiguration icfg = IgnitionEx.loadConfiguration("ignite.xml").getKey();
 
         try (Ignite ignite = Ignition.start(icfg)) {
-            IgniteCache<Integer, OSMUser> cacheNode = ignite.cache("osm_node");
+            IgniteCache<AffinityKey<Long>, OSMNode> cacheNode = ignite.cache("osm_node");
             List<List<?>> rows = cacheNode
-                    .query(new SqlFieldsQuery("select * from OSMNode")).getAll();
+                    .query(new SqlFieldsQuery("select version from OSMNode")).getAll();
 
             if (rows == null || rows.isEmpty()) {
                 System.err.println("Node not found!");
@@ -229,9 +230,10 @@ public class HOSM_Test {
                 System.err.println("Tags with key building not found!");
                 return;
             }
-
             for(int i=0;i<rows.size();i++){
                 System.out.println(rows.get(i));
+                OSMTag osmt = (OSMTag)rows.get(i).get(0);
+                System.out.printf("%s,  %s \n",osmt.getKey(),Arrays.toString(osmt.getValues()));
             }
         }
 
