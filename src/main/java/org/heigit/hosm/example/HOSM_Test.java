@@ -329,7 +329,7 @@ public class HOSM_Test {
 
         IgniteConfiguration icfg = IgnitionEx.loadConfiguration("ignite.xml").getKey();
 
-        String tag = "building";
+        String tag = "Building";
         //String tag = "toilets";
         //String tag = "park";
         //String tag = "traffic_sign";
