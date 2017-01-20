@@ -7,11 +7,7 @@ package org.heigit.hosm.example;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.cache.Cache;
 
@@ -261,11 +257,14 @@ public class HOSM_Test {
                 System.err.println("Tags with key building not found!");
                 return;
             }
+            ArrayList<String> keys = new ArrayList<>();
             for (int i = 0; i < rows.size(); i++) {
                 OSMTag osmt = (OSMTag) rows.get(i).get(0);
+                keys.add(osmt.getKey());
                 System.out.printf("%s,  %s, %s \n", osmt.getKey(), Arrays.toString(osmt.getValues()),
                         Arrays.toString(osmt.getNumbers()));
             }
+            System.out.println(keys);
         }
 
     }
