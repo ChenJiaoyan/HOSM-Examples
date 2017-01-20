@@ -359,7 +359,7 @@ public class HOSM_Test {
                     break;
                 }
             }
-            System.out.printf("%s \n", Arrays.toString((Object[]) rows.get(0).get(3)));
+            System.out.printf("%s \n", Arrays.toString((Object[]) rows.get(0).get(1)));
             System.out.printf("tag value: %d \n", tag_v_n);
 
             SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
