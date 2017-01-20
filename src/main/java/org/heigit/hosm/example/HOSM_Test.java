@@ -37,6 +37,7 @@ import org.apache.ignite.resources.IgniteInstanceResource;
 import org.heigit.bigspatialdata.osh.ignite.model.osh.OSHNode;
 import org.heigit.bigspatialdata.osh.ignite.model.osh.OSHWay;
 import org.heigit.bigspatialdata.osh.ignite.model.osm.OSMTag;
+import org.heigit.bigspatialdata.osh.ignite.model.osm.OSMUser;
 import org.heigit.bigspatialdata.osh.ignite.model.osm.OSMWay;
 
 import org.heigit.hosm.example.Client.MyComputeJob;
@@ -44,7 +45,7 @@ import org.heigit.hosm.example.Client.MyComputeJob;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.WKTReader;
 
-public class OSMNumberOfHouses {
+public class HOSM_Test {
 
     public static class MyJobOption implements Serializable {
         private static final long serialVersionUID = 1L;
@@ -184,7 +185,60 @@ public class OSMNumberOfHouses {
 
     }
 
-    public static void main(String[] args)
+    public static void main(String[] args) throws IgniteCheckedException {
+        System.out.println("############## test2 ##############");
+        test2();
+        System.out.println("############## test3 ##############");
+        test3();
+    }
+
+    public static void test3() throws IgniteCheckedException {
+        Ignition.setClientMode(true);
+
+        IgniteConfiguration icfg = IgnitionEx.loadConfiguration("ignite.xml").getKey();
+
+        try (Ignite ignite = Ignition.start(icfg)) {
+            IgniteCache<Integer, OSMUser> cacheUser = ignite.cache("osm_user");
+            List<List<?>> rows = cacheUser
+                    .query(new SqlFieldsQuery("select _key from OSMUser")).getAll();
+
+            if (rows == null || rows.isEmpty()) {
+                System.err.println("User not found!");
+                return;
+            }
+
+            for (int i = 0; i < rows.size(); i++) {
+                System.out.println(rows.get(i));
+            }
+        }
+    }
+
+
+    public static void test2() throws IgniteCheckedException {
+        Ignition.setClientMode(true);
+
+        IgniteConfiguration icfg = IgnitionEx.loadConfiguration("ignite.xml").getKey();
+
+        //String tag = "building";
+        try (Ignite ignite = Ignition.start(icfg)) {
+            IgniteCache<Integer, OSMTag> cacheTags = ignite.cache("osm_tags");
+            List<List<?>> rows = cacheTags
+                    .query(new SqlFieldsQuery("select _key from OSMTag")).getAll();
+
+            if (rows == null || rows.isEmpty()) {
+                System.err.println("Tags with key building not found!");
+                return;
+            }
+
+            int buildingsKey = ((Integer) rows.get(0).get(0)).intValue();
+            for(int i=0;i<rows.size();i++){
+                System.out.println(rows.get(i));
+            }
+        }
+
+    }
+
+    public static void test1()
             throws IgniteCheckedException, ParseException, com.vividsolutions.jts.io.ParseException {
         Ignition.setClientMode(true);
 
@@ -211,7 +265,7 @@ public class OSMNumberOfHouses {
 
             WKTReader r = new WKTReader();
             // http://arthur-e.github.io/Wicket/sandbox-gmaps3.html
-//            Geometry bbox = r.read(
+//          Geometry bbox = r.read(
 //                    "POLYGON((12.357822060585022 45.42796074630555,12.358822524547577 45.42796074630555,12.358822524547577 45.427420498069445,12.357822060585022 45.427420498069445,12.357822060585022 45.42796074630555))");
             Geometry bbox = r.read(
                     "POLYGON((12.310524 45.445372,12.347603 45.444649,12.349663 45.427303,12.304344 45.428026,12.310524 45.445372))");
