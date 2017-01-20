@@ -337,6 +337,9 @@ public class HOSM_Test {
         //String tag = "route";
         //String tag = "highway";
 
+        String tag_v = "hut";
+        int tag_v_n = 0;
+
         try (Ignite ignite = Ignition.start(icfg)) {
             IgniteCache<Integer, OSMTag> cacheTags = ignite.cache("osm_tags");
             List<List<?>> rows = cacheTags
@@ -347,7 +350,17 @@ public class HOSM_Test {
             }
 
             int buildingsKey = ((Integer) rows.get(0).get(0)).intValue();
-            System.out.printf("key: %d \n", buildingsKey);
+            System.out.printf("tag key: %d \n", buildingsKey);
+
+            Object [] values = (Object[]) rows.get(0).get(3);
+            for(int i=0;i<values.length;i++){
+                if(((String)values[i]).equals(tag_v)){
+                    tag_v_n = i;
+                    break;
+                }
+            }
+            System.out.printf("%s \n", Arrays.toString((Object[]) rows.get(0).get(3)));
+            System.out.printf("tag value: %d \n", tag_v_n);
 
             SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
             List<Long> timestamps = Arrays.asList(formatter.parse("20170101").getTime(),
