@@ -353,7 +353,7 @@ public class HOSM_Test {
             System.out.printf("tag key: %d \n", buildingsKey);
 
             rows = cacheTags
-                    .query(new SqlFieldsQuery("select _val from OSMTag where key = ?").setArgs(tag)).getAll();
+                    .query(new SqlFieldsQuery("select key,number,numbers,values from OSMTag where key = ?").setArgs(tag)).getAll();
             Object [] values = (Object[]) rows.get(0).get(3);
             for(int i=0;i<values.length;i++){
                 if(((String)values[i]).equals(tag_v)){
