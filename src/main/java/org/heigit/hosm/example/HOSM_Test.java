@@ -233,9 +233,7 @@ public class HOSM_Test {
             }
 
             for (int i = 0; i < rows.size(); i++) {
-                System.out.printf("%s, %s, %s, %s", rows.get(i).get(0),
-                        rows.get(i).get(1), Arrays.toString((String [])rows.get(i).get(2)),
-                        Arrays.toString((String [])rows.get(i).get(3)));
+                System.out.printf("%s, %s, %s, %s", rows.get(i).get(0), rows.get(i).get(1), rows.get(i).get(2), rows.get(i).get(3));
             }
         }
     }
@@ -256,10 +254,10 @@ public class HOSM_Test {
                 System.err.println("Tags with key building not found!");
                 return;
             }
-            for(int i=0;i<rows.size();i++){
+            for (int i = 0; i < rows.size(); i++) {
                 System.out.println(rows.get(i));
-                OSMTag osmt = (OSMTag)rows.get(i).get(0);
-                System.out.printf("%s,  %s \n",osmt.getKey(),Arrays.toString(osmt.getValues()));
+                OSMTag osmt = (OSMTag) rows.get(i).get(0);
+                System.out.printf("%s,  %s \n", osmt.getKey(), Arrays.toString(osmt.getValues()));
             }
         }
 
@@ -287,7 +285,7 @@ public class HOSM_Test {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
             List<Long> timestamps = Arrays.asList(formatter.parse("20170101").getTime(),
                     formatter.parse("20160101").getTime(), formatter.parse("20150101").getTime(),
-                    formatter.parse("20140101").getTime(),formatter.parse("20130101").getTime(),
+                    formatter.parse("20140101").getTime(), formatter.parse("20130101").getTime(),
                     formatter.parse("20120101").getTime(), formatter.parse("20120102").getTime());
 
             WKTReader r = new WKTReader();
