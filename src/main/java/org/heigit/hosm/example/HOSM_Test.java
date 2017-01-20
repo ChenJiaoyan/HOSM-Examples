@@ -184,14 +184,39 @@ public class HOSM_Test {
     }
 
     public static void main(String[] args) throws IgniteCheckedException, ParseException, com.vividsolutions.jts.io.ParseException {
-        System.out.println("############## test1 ##############");
-        test1();
+        //System.out.println("############## test1 ##############");
+        //test1();
         //System.out.println("############## test2 ##############");
         //test2();
         //System.out.println("############## test3 ##############");
         //test3();
         //System.out.println("############## test4 ##############");
         //test4();
+        System.out.println("############## test5 ##############");
+        test5();
+    }
+
+    public static void test5() throws IgniteCheckedException {
+        Ignition.setClientMode(true);
+
+        IgniteConfiguration icfg = IgnitionEx.loadConfiguration("ignite.xml").getKey();
+
+        try (Ignite ignite = Ignition.start(icfg)) {
+            IgniteCache<Integer, OSHNode> cacheNodes = ignite.cache("osm_node");
+            List<List<?>> rows = cacheNodes
+                    .query(new SqlFieldsQuery("select _val from OSHNode")).getAll();
+
+            if (rows == null || rows.isEmpty()) {
+                System.err.println("Node not found!");
+                return;
+            }
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+            for (int i = 0; i < rows.size(); i++) {
+                OSHNode oshn = (OSHNode) rows.get(i).get(0);
+                System.out.printf("lat: %d, lon: %d, version: %d", oshn.getLatitude(),oshn.getLongitude(),
+                        oshn.getVersion(), formatter.format(new Date(oshn.getTimestamp())));
+            }
+        }
     }
 
     public static void test4() throws IgniteCheckedException {
