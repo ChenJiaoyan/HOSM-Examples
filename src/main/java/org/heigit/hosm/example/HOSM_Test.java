@@ -90,7 +90,7 @@ public class HOSM_Test {
         @Override
         public Object execute() throws IgniteException {
             Map<Long, Long> result = new HashMap<>(option.timestamps.size());
-
+/*
             IgniteCache<AffinityKey<Long>, OSHNode> cacheNode = ignite.cache("osm_node");
             SqlQuery<AffinityKey<Long>, OSHNode> sqlNode = new SqlQuery<>(OSHNode.class, "BoundingBox && ?");
             sqlNode.setArgs(option.bbox);
@@ -115,7 +115,7 @@ public class HOSM_Test {
 
                 }
             }
-            /*
+*/
             IgniteCache<AffinityKey<Long>, OSHWay> cacheWay = ignite.cache("osm_way");
             // search for all ways within a given bounding box;
             SqlQuery<AffinityKey<Long>, OSHWay> sqlWay = new SqlQuery<>(OSHWay.class, "BoundingBox && ?");
@@ -148,7 +148,7 @@ public class HOSM_Test {
                     }
                 }
             }
-            */
+
             return new MyJobResult(result);
         }
 
