@@ -184,16 +184,16 @@ public class HOSM_Test {
     }
 
     public static void main(String[] args) throws IgniteCheckedException, ParseException, com.vividsolutions.jts.io.ParseException {
-        //System.out.println("############## test1 ##############");
-        //test1();
+        System.out.println("############## test1 ##############");
+        test1();
         //System.out.println("############## test2 ##############");
         //test2();
         //System.out.println("############## test3 ##############");
         //test3();
         //System.out.println("############## test4 ##############");
         //test4();
-        System.out.println("############## test5 ##############");
-        test5();
+        //System.out.println("############## test5 ##############");
+        //test5();
     }
 
     public static void test5() throws IgniteCheckedException {
@@ -302,11 +302,11 @@ public class HOSM_Test {
 
         IgniteConfiguration icfg = IgnitionEx.loadConfiguration("ignite.xml").getKey();
 
-        //String tag = "building";
+        String tag = "building";
         //String tag = "toilets";
         //String tag = "park";
         //String tag = "traffic_sign";
-        String tag = "atm";
+        //String tag = "atm";
 
         try (Ignite ignite = Ignition.start(icfg)) {
             IgniteCache<Integer, OSMTag> cacheTags = ignite.cache("osm_tags");
