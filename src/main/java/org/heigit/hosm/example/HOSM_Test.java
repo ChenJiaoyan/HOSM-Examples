@@ -41,6 +41,7 @@ import org.heigit.bigspatialdata.osh.ignite.model.osm.OSMTag;
 import org.heigit.bigspatialdata.osh.ignite.model.osm.OSMUser;
 import org.heigit.bigspatialdata.osh.ignite.model.osm.OSMWay;
 
+import org.heigit.bigspatialdata.osh.ignite.util.BoundingBox;
 import org.heigit.hosm.example.Client.MyComputeJob;
 
 import com.vividsolutions.jts.geom.Geometry;
@@ -201,7 +202,7 @@ public class HOSM_Test {
         IgniteConfiguration icfg = IgnitionEx.loadConfiguration("ignite.xml").getKey();
 
         try (Ignite ignite = Ignition.start(icfg)) {
-            IgniteCache<Integer, OSMWay> cacheWays = ignite.cache("osm_way");
+            IgniteCache<Integer, OSMWay> cacheWays = ignite.cache("osm_ways");
             List<List<?>> rows = cacheWays
                     .query(new SqlFieldsQuery("select _val from OSMWay")).getAll();
 
@@ -211,7 +212,9 @@ public class HOSM_Test {
             }
 
             for (int i = 0; i < rows.size(); i++) {
-                System.out.println(rows.get(i).get(0));
+                OSMWay osmw = (OSMWay) rows.get(i).get(0);
+                BoundingBox bbox = osmw.getBBoxInternal();
+                System.out.printf("%d, %d, %d, %d \n", bbox.getX1(),bbox.getY1(),bbox.getX2(),bbox.getY2());
             }
         }
     }
