@@ -188,10 +188,10 @@ public class HOSM_Test {
         //test1();
         //System.out.println("############## test2 ##############");
         //test2();
-        System.out.println("############## test3 ##############");
-        test3();
-        //System.out.println("############## test4 ##############");
-        //test4();
+        //System.out.println("############## test3 ##############");
+        //test3();
+        System.out.println("############## test4 ##############");
+        test4();
     }
 
     public static void test4() throws IgniteCheckedException {
@@ -200,9 +200,9 @@ public class HOSM_Test {
         IgniteConfiguration icfg = IgnitionEx.loadConfiguration("ignite.xml").getKey();
 
         try (Ignite ignite = Ignition.start(icfg)) {
-            IgniteCache<Integer, OSMWay> cacheWays = ignite.cache("osm_way");
+            IgniteCache<Integer, OSHWay> cacheWays = ignite.cache("osm_way");
             List<List<?>> rows = cacheWays
-                    .query(new SqlFieldsQuery("select _val from OSMWay")).getAll();
+                    .query(new SqlFieldsQuery("select _val from OSHWay")).getAll();
 
             if (rows == null || rows.isEmpty()) {
                 System.err.println("Way not found!");
@@ -210,9 +210,11 @@ public class HOSM_Test {
             }
 
             for (int i = 0; i < rows.size(); i++) {
-                OSMWay osmw = (OSMWay) rows.get(i).get(0);
+                OSHWay osmw = (OSHWay) rows.get(i).get(0);
                 BoundingBox bbox = osmw.getBBoxInternal();
                 System.out.printf("%d, %d, %d, %d \n", bbox.getX1(),bbox.getY1(),bbox.getX2(),bbox.getY2());
+                Geometry g = osmw.getBoundingBox();
+                System.out.printf("%s \n", Arrays.toString(g.getCoordinates()));
             }
         }
     }
