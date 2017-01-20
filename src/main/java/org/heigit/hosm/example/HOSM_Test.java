@@ -204,7 +204,7 @@ public class HOSM_Test {
         try (Ignite ignite = Ignition.start(icfg)) {
             IgniteCache<Integer, OSMWay> cacheWays = ignite.cache("osm_way");
             List<List<?>> rows = cacheWays
-                    .query(new SqlFieldsQuery("select _val from OSMWay")).getAll();
+                    .query(new SqlFieldsQuery("select _val from OSMWays")).getAll();
 
             if (rows == null || rows.isEmpty()) {
                 System.err.println("Way not found!");
