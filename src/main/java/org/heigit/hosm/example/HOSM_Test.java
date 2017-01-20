@@ -236,7 +236,7 @@ public class HOSM_Test {
             for (int i = 0; i < rows.size(); i++) {
                 System.out.printf("%s, %s, %s \n", rows.get(i).get(0), rows.get(i).get(1),
                         Arrays.toString((int []) rows.get(i).get(2)));
-                System.out.printf("%s \n", Arrays.toString((String []) rows.get(i).get(3)));
+                System.out.printf("%s \n", Arrays.toString((Object[]) rows.get(i).get(3)));
             }
         }
     }
