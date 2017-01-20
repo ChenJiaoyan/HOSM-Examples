@@ -202,7 +202,7 @@ public class HOSM_Test {
         IgniteConfiguration icfg = IgnitionEx.loadConfiguration("ignite.xml").getKey();
 
         try (Ignite ignite = Ignition.start(icfg)) {
-            IgniteCache<Integer, OSMWay> cacheWays = ignite.cache("osm_ways");
+            IgniteCache<Integer, OSMWay> cacheWays = ignite.cache("osm_way");
             List<List<?>> rows = cacheWays
                     .query(new SqlFieldsQuery("select _val from OSMWay")).getAll();
 
