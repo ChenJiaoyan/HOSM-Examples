@@ -186,6 +186,7 @@ public class HOSM_Test {
     public static void main(String[] args) throws IgniteCheckedException, ParseException, com.vividsolutions.jts.io.ParseException {
         System.out.println("############## test1 ##############");
         test1();
+
         //System.out.println("############## test2 ##############");
         //test2();
         //System.out.println("############## test3 ##############");
