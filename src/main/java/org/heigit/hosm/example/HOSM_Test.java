@@ -187,7 +187,7 @@ public class HOSM_Test {
         System.out.println("############## test1 ##############");
         test1();
         System.out.println("############## test2 ##############");
-        test2();
+        //test2();
         //System.out.println("############## test3 ##############");
         //test3();
         //System.out.println("############## test4 ##############");
@@ -275,7 +275,8 @@ public class HOSM_Test {
 
         IgniteConfiguration icfg = IgnitionEx.loadConfiguration("ignite.xml").getKey();
 
-        String tag = "building";
+        //String tag = "building";
+        String tag = "toilets";
 
         try (Ignite ignite = Ignition.start(icfg)) {
             IgniteCache<Integer, OSMTag> cacheTags = ignite.cache("osm_tags");
@@ -286,7 +287,6 @@ public class HOSM_Test {
                 return;
             }
 
-            System.out.println("building keys #: " + rows.size());
             int buildingsKey = ((Integer) rows.get(0).get(0)).intValue();
 
             SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
