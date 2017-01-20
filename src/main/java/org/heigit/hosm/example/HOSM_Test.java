@@ -133,7 +133,7 @@ public class HOSM_Test {
                         Long timestamp = timestampWay.getKey();
                         OSMWay way = timestampWay.getValue();
                         if (hasKey(way.getTags(), option.tagKey)) {
-                            System.out.printf("%s \n", Arrays.toString(way.getTags()));
+   //                         System.out.printf("%s \n", Arrays.toString(way.getTags()));
                             // TODO compute geometry of the way and check it
                             // again against the boundingbox
                             // Geometry g = getGeometry(way);
