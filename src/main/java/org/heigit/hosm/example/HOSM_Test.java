@@ -233,7 +233,9 @@ public class HOSM_Test {
             }
 
             for (int i = 0; i < rows.size(); i++) {
-                System.out.printf("%s ^_^ %s ^_^ %s ^_^ %s \n", rows.get(i).get(0), rows.get(i).get(1), rows.get(i).get(2), rows.get(i).get(3));
+                System.out.printf("%s, %s, %s, %s \n", rows.get(i).get(0), rows.get(i).get(1),
+                        Arrays.toString((int []) rows.get(i).get(2)), Arrays.toString((String []) rows.get(i).get(3))
+                );
             }
         }
     }
@@ -255,9 +257,9 @@ public class HOSM_Test {
                 return;
             }
             for (int i = 0; i < rows.size(); i++) {
-                System.out.println(rows.get(i));
                 OSMTag osmt = (OSMTag) rows.get(i).get(0);
-                System.out.printf("%s,  %s \n", osmt.getKey(), Arrays.toString(osmt.getValues()));
+                System.out.printf("%s,  %s, %s \n", osmt.getKey(), Arrays.toString(osmt.getValues()),
+                        Arrays.toString(osmt.getNumbers()));
             }
         }
 
