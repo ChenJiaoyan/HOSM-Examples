@@ -233,7 +233,7 @@ public class HOSM_Test {
             }
 
             for (int i = 0; i < rows.size(); i++) {
-                System.out.printf("%s, %s, %s, %s", rows.get(i).get(0), rows.get(i).get(1), rows.get(i).get(2), rows.get(i).get(3));
+                System.out.printf("%s ^_^ %s ^_^ %s ^_^ %s \n", rows.get(i).get(0), rows.get(i).get(1), rows.get(i).get(2), rows.get(i).get(3));
             }
         }
     }
