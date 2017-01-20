@@ -187,7 +187,9 @@ public class HOSM_Test {
 
     }
 
-    public static void main(String[] args) throws IgniteCheckedException {
+    public static void main(String[] args) throws IgniteCheckedException, ParseException, com.vividsolutions.jts.io.ParseException {
+        System.out.println("############## test1 ##############");
+        test1();
         System.out.println("############## test2 ##############");
         test2();
         System.out.println("############## test3 ##############");
@@ -204,7 +206,7 @@ public class HOSM_Test {
         try (Ignite ignite = Ignition.start(icfg)) {
             IgniteCache<Integer, OSMWay> cacheWays = ignite.cache("osm_way");
             List<List<?>> rows = cacheWays
-                    .query(new SqlFieldsQuery("select _val from OSMWays")).getAll();
+                    .query(new SqlFieldsQuery("select _val from OSMWay")).getAll();
 
             if (rows == null || rows.isEmpty()) {
                 System.err.println("Way not found!");
@@ -285,6 +287,7 @@ public class HOSM_Test {
                 return;
             }
 
+            System.out.println("building keys #: " + rows.size());
             int buildingsKey = ((Integer) rows.get(0).get(0)).intValue();
 
             SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
