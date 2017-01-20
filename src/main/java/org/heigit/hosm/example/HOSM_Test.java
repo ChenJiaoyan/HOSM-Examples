@@ -201,7 +201,6 @@ public class HOSM_Test {
         IgniteConfiguration icfg = IgnitionEx.loadConfiguration("ignite.xml").getKey();
 
         try (Ignite ignite = Ignition.start(icfg)) {
-            //IgniteCache<AffinityKey<Long>, OSMNode> cacheNode = ignite.cache("osm_node");
             IgniteCache<Integer, OSMWay> cacheWays = ignite.cache("osm_way");
             List<List<?>> rows = cacheWays
                     .query(new SqlFieldsQuery("select _val from OSMWay")).getAll();
@@ -226,7 +225,7 @@ public class HOSM_Test {
             //IgniteCache<AffinityKey<Long>, OSMNode> cacheNode = ignite.cache("osm_node");
             IgniteCache<Integer, OSMTag> cacheTags = ignite.cache("osm_tags");
             List<List<?>> rows = cacheTags
-                    .query(new SqlFieldsQuery("select number from OSMTag")).getAll();
+                    .query(new SqlFieldsQuery("select key,number,numbers,values from OSMTag")).getAll();
 
             if (rows == null || rows.isEmpty()) {
                 System.err.println("Node not found!");
@@ -234,7 +233,9 @@ public class HOSM_Test {
             }
 
             for (int i = 0; i < rows.size(); i++) {
-                System.out.println(rows.get(i).get(0));
+                System.out.printf("%s, %s, %s, %s", rows.get(i).get(0),
+                        rows.get(i).get(1), Arrays.toString((String [])rows.get(i).get(2)),
+                        Arrays.toString((String [])rows.get(i).get(3)));
             }
         }
     }
