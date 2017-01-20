@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.heigit.bigspatialdata:oshpbf-parser:1">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/heigit/bigspatialdata/oshpbf-parser/1/oshpbf-parser-1.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/heigit/bigspatialdata/oshpbf-parser/1/oshpbf-parser-1-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/heigit/bigspatialdata/oshpbf-parser/1/oshpbf-parser-1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
