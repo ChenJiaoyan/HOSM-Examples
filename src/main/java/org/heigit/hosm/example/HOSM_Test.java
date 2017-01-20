@@ -347,7 +347,7 @@ public class HOSM_Test {
             }
 
             int buildingsKey = ((Integer) rows.get(0).get(0)).intValue();
-            System.out.printf("key: %d \n" + buildingsKey);
+            System.out.printf("key: %d \n", buildingsKey);
 
             SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
             List<Long> timestamps = Arrays.asList(formatter.parse("20170101").getTime(),
