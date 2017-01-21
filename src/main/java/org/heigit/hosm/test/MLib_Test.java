@@ -21,6 +21,7 @@ import org.apache.spark.mllib.regression.LabeledPoint;
 
 import org.apache.spark.mllib.regression.LinearRegressionModel;
 import org.apache.spark.mllib.regression.LinearRegressionWithSGD;
+import org.apache.spark.mllib.stat.Statistics;
 import org.apache.spark.mllib.tree.DecisionTree;
 import org.apache.spark.mllib.tree.model.DecisionTreeModel;
 import org.apache.spark.mllib.util.MLUtils;
@@ -28,8 +29,7 @@ import org.apache.spark.mllib.util.MLUtils;
 import scala.Tuple2;
 
 import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by John on 1/16/17.
@@ -45,13 +45,35 @@ public class MLib_Test {
             dir = args[0];
             sparkConf = new SparkConf().setAppName("SVM Classifier Example");
         }
-
         JavaSparkContext jsc = new JavaSparkContext(sparkConf);
+        List<double []> l = new ArrayList<>();
+        l.add(new double []{2,3,4});
+        l.add(new double []{0.2,0.3,0.4});
+        JavaRDD<double []> d = jsc.parallelize(l);
+
+        JavaRDD<Vector> parsedData = d.map(
+                new Function<double [], Vector>() {
+                    public Vector call(double [] v) {
+                        return Vectors.dense(v);
+                    }
+                }
+        );
+        parsedData.cache();
+
+        RowMatrix mat = new RowMatrix(parsedData.rdd());
+        long m = mat.numRows();
+        long n = mat.numCols();
+        System.out.printf("(%d, %d)",m,n);
+
+        JavaDoubleRDD dd1 = jsc.parallelizeDoubles(Arrays.asList(new Double []{1.1,2.2,2.9} ));
+        JavaDoubleRDD dd2 = jsc.parallelizeDoubles(Arrays.asList(new Double []{1.1,3.2,3.1} ));
+        Double correlation = Statistics.corr(dd1.srdd(), dd2.srdd(), "pearson");
+        System.out.printf("corr: %f", correlation);
         //classification_test1(jsc,dir);
         //classification_test2(jsc,dir);
         //classification_test3(jsc, dir);
         //regression_test1(jsc,dir);
-        data_type_test(jsc,dir);
+        //data_type_test(jsc,dir);
         jsc.stop();
     }
 
