@@ -16,7 +16,7 @@ import java.util.Map;
 public class MLib_Examples {
     public static void main(String args []) throws IgniteCheckedException, ParseException, com.vividsolutions.jts.io.ParseException {
         String tagKey = "building";
-        String tagValue = "industrial";
+        String tagValue = "hut";
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
         String start_time_str = "20100101";
         String end_time_str = "20170101";
