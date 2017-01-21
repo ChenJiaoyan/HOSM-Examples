@@ -27,7 +27,7 @@ public class MLib_Examples {
 
     public static void main(String args[]) throws URISyntaxException, ParseException, com.vividsolutions.jts.io.ParseException, IgniteCheckedException {
         String tagKey = "building";
-        String [] tagValues = {"hut","industrial","residential"};
+        String [] tagValues = {"hut","roof","industrial","residential"};
         List<Double []> osm_count = read_HOSM(tagKey,tagValues);
 
         SparkConf sparkConf = null;
