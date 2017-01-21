@@ -18,7 +18,7 @@ public class MLib_Examples {
         String tagKey = "building";
         String tagValue = "industrial";
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
-        String start_time_str = "20120101";
+        String start_time_str = "20100101";
         String end_time_str = "20170101";
         int step_month = 1;
 
