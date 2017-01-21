@@ -35,7 +35,8 @@ public class MLib_Examples {
         String polygon_str = "POLYGON((12.297821044921875 45.45174687098183,12.371635437011719 45.45174687098183,12.371635437011719 45.4187415580181,12.297821044921875 45.4187415580181,12.297821044921875 45.45174687098183))";
 
         HOSMClient client = new HOSMClient();
-        Map<Long,Long> counts = client.spatial_temporal_count(tagKey,tagValue, times ,polygon_str);
+//        Map<Long,Long> counts = client.spatial_temporal_count(tagKey,tagValue, times ,polygon_str);
+        Map<Long,Long> counts = client.spatial_temporal_count(tagKey, times ,polygon_str);
 
         for(int i=0; i<times.size();i++){
             Long t = times.get(i);
