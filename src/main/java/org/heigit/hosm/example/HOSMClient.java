@@ -33,7 +33,6 @@ import java.util.*;
  */
 public class HOSMClient {
 
-    private Ignite ignite;
 
     public static class JobOption implements Serializable {
         private static final long serialVersionUID = 1L;
@@ -231,50 +230,47 @@ public class HOSMClient {
 
     }
 
-    public HOSMClient() throws IgniteCheckedException {
-        Ignition.setClientMode(true);
-        IgniteConfiguration icfg = IgnitionEx.loadConfiguration("ignite.xml").getKey();
-        try (Ignite ignite = Ignition.start(icfg)) {
-            this.ignite = ignite;
-        }
-    }
 
     public Map<Long,Long> spatial_temporal_count(String tagKey, String tagValue, ArrayList<Long> times_arr,
-                                       String polygon_str) throws ParseException, com.vividsolutions.jts.io.ParseException {
+                                       String polygon_str) throws ParseException, com.vividsolutions.jts.io.ParseException, IgniteCheckedException {
         String[] obj_types = new String[]{"way"};
         return spatial_temporal_count(tagKey, tagValue, times_arr, polygon_str, obj_types);
     }
     public Map<Long,Long> spatial_temporal_count(String tagKey, ArrayList<Long> times_arr, String polygon_str,
-                                                 String[] obj_types) throws ParseException, com.vividsolutions.jts.io.ParseException {
+                                                 String[] obj_types) throws ParseException, com.vividsolutions.jts.io.ParseException, IgniteCheckedException {
         return spatial_temporal_count(tagKey, null, times_arr, polygon_str, obj_types);
     }
 
     public Map<Long,Long> spatial_temporal_count(String tagKey, ArrayList<Long> times_arr, String polygon_str
-                                                 ) throws ParseException, com.vividsolutions.jts.io.ParseException {
+                                                 ) throws ParseException, com.vividsolutions.jts.io.ParseException, IgniteCheckedException {
         String[] obj_types = new String[]{"way"};
         return spatial_temporal_count(tagKey, null, times_arr, polygon_str, obj_types);
     }
 
     public Map<Long,Long> spatial_temporal_count(String tagKey, String tagValue, ArrayList<Long> times_arr, String polygon_str,
-                                       String[] obj_types) throws ParseException, com.vividsolutions.jts.io.ParseException {
-        int[] tags = get_tag_value(tagKey, tagValue);
-        if (tags != null) {
-            int tag_k_n = tags[0];
-            int tag_v_n = tags[1];
-            List<Long> timestamps = times_arr;
-            WKTReader r = new WKTReader();
-            Geometry bbox = r.read(polygon_str);
-            JobOption option = new JobOption(timestamps, bbox, tag_k_n, tag_v_n);
-            IgniteCompute compute = ignite.compute(ignite.cluster().forRemotes());
-            CountJob myJob = new CountJob(option, ignite, false, obj_types);
-            JobResult result = (JobResult) myJob.execute();
-            return result.timestampCount;
-        }else{
-            return null;
+                                       String[] obj_types) throws ParseException, com.vividsolutions.jts.io.ParseException, IgniteCheckedException {
+        Ignition.setClientMode(true);
+        IgniteConfiguration icfg = IgnitionEx.loadConfiguration("ignite.xml").getKey();
+        try (Ignite ignite = Ignition.start(icfg)) {
+            int[] tags = get_tag_value(ignite, tagKey, tagValue);
+            if (tags != null) {
+                int tag_k_n = tags[0];
+                int tag_v_n = tags[1];
+                List<Long> timestamps = times_arr;
+                WKTReader r = new WKTReader();
+                Geometry bbox = r.read(polygon_str);
+                JobOption option = new JobOption(timestamps, bbox, tag_k_n, tag_v_n);
+                IgniteCompute compute = ignite.compute(ignite.cluster().forRemotes());
+                CountJob myJob = new CountJob(option, ignite, false, obj_types);
+                JobResult result = (JobResult) myJob.execute();
+                return result.timestampCount;
+            } else {
+                return null;
+            }
         }
     }
 
-    private int[] get_tag_value(String tagKey, String tagValue) {
+    private int[] get_tag_value(Ignite ignite, String tagKey, String tagValue) {
         int tag_v_n = -1;
         IgniteCache<Integer, OSMTag> cacheTags = ignite.cache("osm_tags");
         List<List<?>> rows = cacheTags
