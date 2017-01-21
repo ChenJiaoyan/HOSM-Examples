@@ -39,7 +39,7 @@ public class MLib_Examples {
 
         for(int i=0; i<times.size();i++){
             Long t = times.get(i);
-            System.out.printf("%s: %d \n",formatter.format(new Date(t)),counts.get(t));
+            System.out.printf("%s: %d \n",formatter.format(new Date(t)),(counts.get(t)==null)?0:counts.get(t));
         }
     }
 }
