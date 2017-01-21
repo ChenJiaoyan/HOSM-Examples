@@ -15,13 +15,10 @@ import java.util.Map;
  */
 public class MLib_Examples {
     public static void main(String args []) throws IgniteCheckedException, ParseException, com.vividsolutions.jts.io.ParseException {
-        String tagKey = "building";
-        String tagValue = "hut";
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
-        String start_time_str = "20100101";
+        String start_time_str = "20121201";
         String end_time_str = "20170101";
         int step_month = 1;
-
         ArrayList<Long> times = new ArrayList<>();
         Calendar it = Calendar.getInstance();
         it.setTime(formatter.parse(start_time_str));
@@ -34,13 +31,26 @@ public class MLib_Examples {
 
         String polygon_str = "POLYGON((12.297821044921875 45.45174687098183,12.371635437011719 45.45174687098183,12.371635437011719 45.4187415580181,12.297821044921875 45.4187415580181,12.297821044921875 45.45174687098183))";
 
-        HOSMClient client = new HOSMClient();
-//        Map<Long,Long> counts = client.spatial_temporal_count(tagKey,tagValue, times ,polygon_str);
-        Map<Long,Long> counts = client.spatial_temporal_count(tagKey, times ,polygon_str);
+        String tagKey = "building";
+        String [] tagValues = {"hut","industrial","residential"};
 
-        for(int i=0; i<times.size();i++){
+        HOSMClient client = new HOSMClient();
+
+        System.out.println("#### count the buildings #####");
+        Map<Long,Long> counts = client.spatial_temporal_count(tagKey, times ,polygon_str);
+        for (int i = 0; i < times.size(); i++) {
             Long t = times.get(i);
-            System.out.printf("%s: %d \n",formatter.format(new Date(t)),(counts.get(t)==null)?0:counts.get(t));
+            System.out.printf("%s: %d \n", formatter.format(new Date(t)), (counts.get(t) == null) ? 0 : counts.get(t));
+        }
+
+        for(int k=0;k<tagValues.length;k++) {
+            String tagValue = tagValues[k];
+            System.out.println("#### count the buildings of "+tagValue+" #####");
+            counts = client.spatial_temporal_count(tagKey, tagValue, times, polygon_str);
+            for (int i = 0; i < times.size(); i++) {
+                Long t = times.get(i);
+                System.out.printf("%s: %d \n", formatter.format(new Date(t)), (counts.get(t) == null) ? 0 : counts.get(t));
+            }
         }
     }
 }
