@@ -32,14 +32,13 @@ public class MLib_Examples {
             it.add(Calendar.MONTH,step_month);
         }
 
-        Long [] times_long = (Long []) times.toArray();
         String polygon_str = "POLYGON((12.297821044921875 45.45174687098183,12.371635437011719 45.45174687098183,12.371635437011719 45.4187415580181,12.297821044921875 45.4187415580181,12.297821044921875 45.45174687098183))";
 
         HOSMClient client = new HOSMClient();
-        Map<Long,Long> counts = client.spatial_temporal_count(tagKey,tagValue, times_long,polygon_str);
+        Map<Long,Long> counts = client.spatial_temporal_count(tagKey,tagValue, times ,polygon_str);
 
-        for(int i=0; i<times_long.length;i++){
-            Long t = times_long[i];
+        for(int i=0; i<times.size();i++){
+            Long t = times.get(i);
             System.out.printf("%s: %d \n",formatter.format(new Date(t)),counts.get(t));
         }
     }

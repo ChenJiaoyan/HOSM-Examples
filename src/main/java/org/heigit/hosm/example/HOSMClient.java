@@ -239,29 +239,29 @@ public class HOSMClient {
         }
     }
 
-    public Map<Long,Long> spatial_temporal_count(String tagKey, String tagValue, Long [] times_arr,
+    public Map<Long,Long> spatial_temporal_count(String tagKey, String tagValue, ArrayList<Long> times_arr,
                                        String polygon_str) throws ParseException, com.vividsolutions.jts.io.ParseException {
         String[] obj_types = new String[]{"way"};
         return spatial_temporal_count(tagKey, tagValue, times_arr, polygon_str, obj_types);
     }
-    public Map<Long,Long> spatial_temporal_count(String tagKey, Long [] times_arr, String polygon_str,
+    public Map<Long,Long> spatial_temporal_count(String tagKey, ArrayList<Long> times_arr, String polygon_str,
                                                  String[] obj_types) throws ParseException, com.vividsolutions.jts.io.ParseException {
         return spatial_temporal_count(tagKey, null, times_arr, polygon_str, obj_types);
     }
 
-    public Map<Long,Long> spatial_temporal_count(String tagKey, Long [] times_arr, String polygon_str
+    public Map<Long,Long> spatial_temporal_count(String tagKey, ArrayList<Long> times_arr, String polygon_str
                                                  ) throws ParseException, com.vividsolutions.jts.io.ParseException {
         String[] obj_types = new String[]{"way"};
         return spatial_temporal_count(tagKey, null, times_arr, polygon_str, obj_types);
     }
 
-    public Map<Long,Long> spatial_temporal_count(String tagKey, String tagValue, Long [] times_arr, String polygon_str,
+    public Map<Long,Long> spatial_temporal_count(String tagKey, String tagValue, ArrayList<Long> times_arr, String polygon_str,
                                        String[] obj_types) throws ParseException, com.vividsolutions.jts.io.ParseException {
         int[] tags = get_tag_value(tagKey, tagValue);
         if (tags != null) {
             int tag_k_n = tags[0];
             int tag_v_n = tags[1];
-            List<Long> timestamps = Arrays.asList(times_arr);
+            List<Long> timestamps = times_arr;
             WKTReader r = new WKTReader();
             Geometry bbox = r.read(polygon_str);
             JobOption option = new JobOption(timestamps, bbox, tag_k_n, tag_v_n);
