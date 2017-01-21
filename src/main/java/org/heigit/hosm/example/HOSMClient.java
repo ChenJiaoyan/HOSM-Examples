@@ -1,34 +1,39 @@
 package org.heigit.hosm.example;
 
 import com.vividsolutions.jts.geom.Geometry;
-import org.apache.ignite.Ignite;
-import org.apache.ignite.IgniteCache;
-import org.apache.ignite.IgniteException;
+import com.vividsolutions.jts.io.WKTReader;
+import org.apache.ignite.*;
 import org.apache.ignite.cache.affinity.AffinityKey;
 import org.apache.ignite.cache.query.QueryCursor;
+import org.apache.ignite.cache.query.SqlFieldsQuery;
 import org.apache.ignite.cache.query.SqlQuery;
 import org.apache.ignite.cluster.ClusterNode;
 import org.apache.ignite.compute.ComputeJob;
 import org.apache.ignite.compute.ComputeJobAdapter;
 import org.apache.ignite.compute.ComputeJobResult;
 import org.apache.ignite.compute.ComputeTaskAdapter;
+import org.apache.ignite.configuration.IgniteConfiguration;
+import org.apache.ignite.internal.IgnitionEx;
 import org.apache.ignite.resources.IgniteInstanceResource;
 import org.heigit.bigspatialdata.osh.ignite.model.osh.OSHNode;
 import org.heigit.bigspatialdata.osh.ignite.model.osh.OSHWay;
 import org.heigit.bigspatialdata.osh.ignite.model.osm.OSMNode;
+import org.heigit.bigspatialdata.osh.ignite.model.osm.OSMTag;
 import org.heigit.bigspatialdata.osh.ignite.model.osm.OSMWay;
 
 import javax.cache.Cache;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Created by Rtroilo on 1/19/17.
  * Revised by Jiaoyan on 1/21/17.
  */
 public class HOSMClient {
+
+    private Ignite ignite;
 
     public static class JobOption implements Serializable {
         private static final long serialVersionUID = 1L;
@@ -52,11 +57,11 @@ public class HOSMClient {
         }
     }
 
-    public static class MyJobResult implements Serializable {
+    public static class JobResult implements Serializable {
         private static final long serialVersionUID = 1L;
         private final Map<Long, Long> timestampCount;
 
-        public MyJobResult(final Map<Long, Long> tc) {
+        public JobResult(final Map<Long, Long> tc) {
             this.timestampCount = tc;
         }
     }
@@ -106,7 +111,7 @@ public class HOSMClient {
                         break;
                 }
             }
-            return new MyJobResult(result);
+            return new JobResult(result);
         }
 
         private Map<Long, Long> countWay(Map<Long, Long> result) {
@@ -167,7 +172,6 @@ public class HOSMClient {
         /*
         * tags is an index array of [key,value, key,value, ...] order by key!
         */
-
         private boolean hasKeyValue(int[] tags, int key, int value) {
             for (int i = 0; i < tags.length; i += 2) {
                 if (tags[i] < key)
@@ -189,7 +193,7 @@ public class HOSMClient {
         }
     }
 
-    public static class MyTaskAdapter extends ComputeTaskAdapter<JobOption, MyJobResult> {
+    public static class MyTaskAdapter extends ComputeTaskAdapter<JobOption, JobResult> {
 
         private static final long serialVersionUID = 1L;
 
@@ -208,10 +212,10 @@ public class HOSMClient {
         }
 
         @Override
-        public MyJobResult reduce(List<ComputeJobResult> results) throws IgniteException {
+        public JobResult reduce(List<ComputeJobResult> results) throws IgniteException {
             Map<Long, Long> reducedResult = new HashMap<>();
             for (ComputeJobResult computeJobResult : results) {
-                MyJobResult rs = computeJobResult.<MyJobResult>getData();
+                JobResult rs = computeJobResult.<JobResult>getData();
                 for (Map.Entry<Long, Long> entry : rs.timestampCount.entrySet()) {
                     Long timestamp = entry.getKey();
                     Long count = reducedResult.get(timestamp);
@@ -222,9 +226,77 @@ public class HOSMClient {
                     reducedResult.put(timestamp, count);
                 }
             }
-            return new MyJobResult(reducedResult);
+            return new JobResult(reducedResult);
         }
 
+    }
+
+    public HOSMClient() throws IgniteCheckedException {
+        Ignition.setClientMode(true);
+        IgniteConfiguration icfg = IgnitionEx.loadConfiguration("ignite.xml").getKey();
+        try (Ignite ignite = Ignition.start(icfg)) {
+            this.ignite = ignite;
+        }
+    }
+
+    public Map<Long,Long> spatial_temporal_count(String tagKey, String tagValue, Long [] times_arr,
+                                       String polygon_str) throws ParseException, com.vividsolutions.jts.io.ParseException {
+        String[] obj_types = new String[]{"way"};
+        return spatial_temporal_count(tagKey, tagValue, times_arr, polygon_str, obj_types);
+    }
+    public Map<Long,Long> spatial_temporal_count(String tagKey, Long [] times_arr, String polygon_str,
+                                                 String[] obj_types) throws ParseException, com.vividsolutions.jts.io.ParseException {
+        return spatial_temporal_count(tagKey, null, times_arr, polygon_str, obj_types);
+    }
+
+    public Map<Long,Long> spatial_temporal_count(String tagKey, Long [] times_arr, String polygon_str
+                                                 ) throws ParseException, com.vividsolutions.jts.io.ParseException {
+        String[] obj_types = new String[]{"way"};
+        return spatial_temporal_count(tagKey, null, times_arr, polygon_str, obj_types);
+    }
+
+    public Map<Long,Long> spatial_temporal_count(String tagKey, String tagValue, Long [] times_arr, String polygon_str,
+                                       String[] obj_types) throws ParseException, com.vividsolutions.jts.io.ParseException {
+        int[] tags = get_tag_value(tagKey, tagValue);
+        if (tags != null) {
+            int tag_k_n = tags[0];
+            int tag_v_n = tags[1];
+            List<Long> timestamps = Arrays.asList(times_arr);
+            WKTReader r = new WKTReader();
+            Geometry bbox = r.read(polygon_str);
+            JobOption option = new JobOption(timestamps, bbox, tag_k_n, tag_v_n);
+            IgniteCompute compute = ignite.compute(ignite.cluster().forRemotes());
+            CountJob myJob = new CountJob(option, ignite, false, obj_types);
+            JobResult result = (JobResult) myJob.execute();
+            return result.timestampCount;
+        }else{
+            return null;
+        }
+    }
+
+    private int[] get_tag_value(String tagKey, String tagValue) {
+        int tag_v_n = -1;
+        IgniteCache<Integer, OSMTag> cacheTags = ignite.cache("osm_tags");
+        List<List<?>> rows = cacheTags
+                .query(new SqlFieldsQuery("select _key,values from OSMTag where key = ?").setArgs(tagKey)).getAll();
+        if (rows == null || rows.isEmpty()) {
+            System.err.println("Tags with key building not found!");
+            return null;
+        }
+        int tag_k_n = ((Integer) rows.get(0).get(0)).intValue();
+        System.out.printf("tag key: %d \n", tag_k_n);
+
+        Object[] values = (Object[]) rows.get(0).get(1);
+        for (int i = 0; i < values.length; i++) {
+            if (((String) values[i]).equals(tagValue)) {
+                tag_v_n = i;
+                break;
+            }
+        }
+        System.out.printf("%s \n", Arrays.toString((Object[]) rows.get(0).get(1)));
+        System.out.printf("tag value: %d \n", tag_v_n);
+
+        return new int[]{tag_k_n, tag_v_n};
     }
 
 }
