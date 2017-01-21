@@ -1,4 +1,4 @@
-package org.heigit.hosm.example;
+package org.heigit.hosm.test;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaDoubleRDD;

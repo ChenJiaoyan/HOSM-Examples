@@ -1,4 +1,4 @@
-package org.heigit.hosm.example;
+package org.heigit.hosm.test;
 
 /**
  * Created by Rtroilo on 1/19/17.
@@ -19,7 +19,6 @@ import org.apache.ignite.IgniteException;
 import org.apache.ignite.Ignition;
 import org.apache.ignite.cache.affinity.AffinityKey;
 import org.apache.ignite.cache.query.QueryCursor;
-import org.apache.ignite.cache.query.ScanQuery;
 import org.apache.ignite.cache.query.SqlFieldsQuery;
 import org.apache.ignite.cache.query.SqlQuery;
 import org.apache.ignite.cluster.ClusterNode;
@@ -32,13 +31,10 @@ import org.apache.ignite.internal.IgnitionEx;
 import org.apache.ignite.resources.IgniteInstanceResource;
 import org.heigit.bigspatialdata.osh.ignite.model.osh.OSHNode;
 import org.heigit.bigspatialdata.osh.ignite.model.osh.OSHWay;
-import org.heigit.bigspatialdata.osh.ignite.model.osm.OSMNode;
 import org.heigit.bigspatialdata.osh.ignite.model.osm.OSMTag;
-import org.heigit.bigspatialdata.osh.ignite.model.osm.OSMUser;
 import org.heigit.bigspatialdata.osh.ignite.model.osm.OSMWay;
 
 import org.heigit.bigspatialdata.osh.ignite.util.BoundingBox;
-import org.heigit.hosm.example.Client.MyComputeJob;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.WKTReader;

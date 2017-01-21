@@ -1,4 +1,4 @@
-package org.heigit.hosm.example;
+package org.heigit.hosm.test;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
@@ -24,7 +24,6 @@ import org.heigit.bigspatialdata.osh.ignite.model.osm.OSMTag;
 
 
 import javax.cache.Cache;
-import java.io.File;
 import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.util.Arrays;
