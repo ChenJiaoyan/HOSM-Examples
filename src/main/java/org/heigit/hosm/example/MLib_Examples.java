@@ -41,14 +41,20 @@ public class MLib_Examples {
         for(String v:tagValues){
             items.add(v);
         }
+
+        /**
+         * Example 1: calculate the Pearson correlation coefficient between two time-series
+         */
+        String result1 = "";
         for(int i=0;i<items.size()-1;i++){
             for(int j=i+1;j<items.size();j++){
                 JavaDoubleRDD ri = jsc.parallelizeDoubles(Arrays.asList(osm_count.get(i)));
                 JavaDoubleRDD rj = jsc.parallelizeDoubles(Arrays.asList(osm_count.get(j)));
                 Double correlation = Statistics.corr(ri.srdd(), rj.srdd(), "pearson");
-                System.out.printf("(%s, %s) corr: %f", items.get(i),items.get(j),correlation);
+                result1 += String.format("(%s, %s) corr: %f", items.get(i),items.get(j),correlation);
             }
         }
+        System.out.println(result1);
     }
 
     public static List<Double []> read_HOSM(String tagKey, String [] tagValues)
