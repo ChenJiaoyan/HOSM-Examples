@@ -15,6 +15,7 @@ import org.apache.spark.mllib.linalg.Vectors;
 import org.apache.spark.mllib.linalg.distributed.RowMatrix;
 import org.apache.spark.mllib.stat.MultivariateStatisticalSummary;
 import org.apache.spark.mllib.stat.Statistics;
+import org.apache.zookeeper.data.Stat;
 
 
 import java.net.URISyntaxException;
@@ -29,6 +30,10 @@ import java.util.stream.Stream;
 public class MLib_Examples {
 
     public static void main(String args[]) throws URISyntaxException, ParseException, com.vividsolutions.jts.io.ParseException, IgniteCheckedException {
+        /**
+         * we count the "way" with tag key and (tag_key tag_value) pair in Venice
+         * each "count" generates a time-series
+         */
         String tagKey = "building";
         String [] tagValues = {"hut","roof","industrial","residential"};
         List<String> items = new ArrayList<String>();
@@ -62,24 +67,19 @@ public class MLib_Examples {
         System.out.println(result1);
 
         /**
-         * Example 2:  Compute column summary statistics.
+         * Example 2:  Compute summary column-wised for each time-series.
          */
         List<Vector> osm_count_v = new ArrayList<Vector>();
         for(Double [] item: osm_count){
             osm_count_v.add(Vectors.dense(ArrayUtils.toPrimitive(item)));
         }
         JavaRDD<Vector> osm_count_mat = jsc.parallelize(osm_count_v);
-        osm_count_mat = jsc.parallelize(
-                Arrays.asList(
-                        Vectors.dense(1.0, 10.0, 100.0),
-                        Vectors.dense(2.0, 20.0, 200.0),
-                        Vectors.dense(3.0, 30.0, 300.0)
-                )
-        );
+        RowMatrix mat = new RowMatrix(osm_count_mat.rdd());
         MultivariateStatisticalSummary summary = Statistics.colStats(osm_count_mat.rdd());
-        System.out.println(summary.mean());
-        System.out.println(summary.variance());
-        System.out.println(summary.numNonzeros());
+        System.out.println("means: " + summary.mean());
+        System.out.println("variances: " + summary.variance());
+        System.out.println("Nonezeros #: " + summary.numNonzeros());
+
     }
 
     public static List<Double []> read_HOSM(String tagKey, String [] tagValues)
