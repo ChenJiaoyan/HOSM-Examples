@@ -1,6 +1,5 @@
 package org.heigit.hosm.example;
 
-import org.apache.avro.generic.GenericData;
 import org.apache.ignite.IgniteCheckedException;
 import org.apache.ignite.cache.query.annotations.QueryGroupIndex;
 import org.apache.spark.SparkConf;
