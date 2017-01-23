@@ -26,8 +26,10 @@ import java.util.stream.Stream;
 
 /**
  * Created by John on 1/21/17.
+ * Latest update: Jan 23, 2017
+ * Two examples to do analytics work with Spark MLLib and History OSM
  */
-public class MLib_Examples {
+public class HOSM_MLlib_Examples {
 
     public static void main(String args[]) throws URISyntaxException, ParseException, com.vividsolutions.jts.io.ParseException, IgniteCheckedException {
         /**

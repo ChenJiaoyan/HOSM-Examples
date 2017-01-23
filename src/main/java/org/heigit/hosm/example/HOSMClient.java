@@ -30,6 +30,7 @@ import java.util.*;
 /**
  * Created by Rtroilo on 1/19/17.
  * Revised by Jiaoyan on 1/21/17.
+ * Latest update: Jan 23, 2017
  */
 public class HOSMClient {
 

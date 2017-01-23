@@ -1,4 +1,4 @@
-package org.heigit.hosm.test;
+package org.heigit.hosm.example;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaDoubleRDD;
@@ -32,14 +32,18 @@ import java.net.URISyntaxException;
 import java.util.*;
 
 /**
- * Created by John on 1/16/17.
+ * Created by Jiaoyan on 1/16/17.
+ * Some examples to use MLlib for classification/regression
+ * They have been tested with the local model of Spark 1.5.2
+ *
+ * Updated in 1/23/17
  */
-public class MLib_Test {
+public class MLlib_Examples {
     public static void main(String args[]) throws URISyntaxException {
         String dir = null;
         SparkConf sparkConf = null;
         if (args.length == 0) {
-            dir = MLib_Test.class.getResource("/").toURI().getPath() + "../../src/main/resources/";
+            dir = MLlib_Examples.class.getResource("/").toURI().getPath() + "../../src/main/resources/";
             sparkConf = new SparkConf().setAppName("SVM Classifier Example").setMaster("local");
         } else {
             dir = args[0];
@@ -77,6 +81,11 @@ public class MLib_Test {
         jsc.stop();
     }
 
+    /**
+     * the example about data type in MLLib
+     * @param jsc
+     * @param dir
+     */
     public static void data_type_test(JavaSparkContext jsc, String dir){
         String path = dir + "lpsa.data";
         JavaRDD<String> data = jsc.textFile(path);
@@ -98,6 +107,9 @@ public class MLib_Test {
         System.out.printf("(%d, %d)",m,n);
     }
 
+    /**
+     * The first example to build and test regression model
+     */
     public static void regression_test1(JavaSparkContext jsc, String dir) throws URISyntaxException {
         String path = dir + "lpsa.data";
         JavaRDD<String> data = jsc.textFile(path);
@@ -115,12 +127,10 @@ public class MLib_Test {
         );
 
         parsedData.cache();
-        // Building the model
         int numIterations = 100;
         final LinearRegressionModel model =
                 LinearRegressionWithSGD.train(JavaRDD.toRDD(parsedData), numIterations);
 
-        // Evaluate model on training examples and compute training error
         JavaRDD<Tuple2<Double, Double>> valuesAndPreds = parsedData.map(
                 new Function<LabeledPoint, Tuple2<Double, Double>>() {
                     public Tuple2<Double, Double> call(LabeledPoint point) {
@@ -142,6 +152,12 @@ public class MLib_Test {
 
     }
 
+    /**
+     * Example to build and test classification model
+     * @param jsc
+     * @param dir
+     * @throws URISyntaxException
+     */
     public static void classification_test2(JavaSparkContext jsc, String dir) throws URISyntaxException {
         String path = dir + "sample_libsvm_data.txt";
         JavaRDD<LabeledPoint> data = MLUtils.loadLibSVMFile(jsc.sc(), path).toJavaRDD();
@@ -210,7 +226,7 @@ public class MLib_Test {
         // Save and load model
         //model.save(jsc.sc(), dir + "model");
         //LogisticRegressionModel sameModel = LogisticRegressionModel.load(jsc.sc(),
-         //             dir + "model");
+        //             dir + "model");
     }
 
     public static void classification_test3(JavaSparkContext jsc, String dir) throws URISyntaxException {
@@ -250,3 +266,4 @@ public class MLib_Test {
 
     }
 }
+
