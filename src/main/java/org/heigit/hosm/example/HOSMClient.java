@@ -271,6 +271,7 @@ public class HOSMClient {
         }
     }
 
+
     private int[] get_tag_value(Ignite ignite, String tagKey, String tagValue) {
         int tag_v_n = -1;
         IgniteCache<Integer, OSMTag> cacheTags = ignite.cache("osm_tags");
