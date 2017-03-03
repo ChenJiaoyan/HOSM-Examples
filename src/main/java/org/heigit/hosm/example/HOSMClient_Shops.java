@@ -251,7 +251,7 @@ public class HOSMClient_Shops {
 
     public Map<Long,Long> spatial_temporal_count(String tagKey, ArrayList<Long> times_arr, String polygon_str
     ) throws ParseException, com.vividsolutions.jts.io.ParseException, IgniteCheckedException {
-        String[] obj_types = new String[]{"way"};
+        String[] obj_types = new String[]{"way","node"};
         return spatial_temporal_count(tagKey, null, times_arr, polygon_str, obj_types);
     }
 
