@@ -99,7 +99,7 @@ public class HOSM_Select {
             for (int i = 0; i < this.object_types.length; i++) {
                 switch (object_types[i]) {
                     case "way":
-                        result = countWay(result);
+                        result = printWay(result);
                         break;
                     case "node":
                         result = printNode(result);
@@ -111,7 +111,7 @@ public class HOSM_Select {
             return new JobResult(result);
         }
 
-        private Map<Long, Long> countWay(Map<Long, Long> result) {
+        private Map<Long, Long> printWay(Map<Long, Long> result) {
             IgniteCache<AffinityKey<Long>, OSHWay> cacheWay = ignite.cache("osm_way");
             SqlQuery<AffinityKey<Long>, OSHWay> sqlWay = new SqlQuery<>(OSHWay.class, "BoundingBox && ?");
             sqlWay.setArgs(option.bbox);
@@ -120,8 +120,6 @@ public class HOSM_Select {
             try (QueryCursor<Cache.Entry<AffinityKey<Long>, OSHWay>> cursor = cacheWay.query(sqlWay)) {
                 for (Cache.Entry<AffinityKey<Long>, OSHWay> row : cursor) {
                     OSHWay oshWay = row.getValue();
-                    //int userid = oshWay.getUserId();
-                    //System.out.printf("countWay, userid: %d",userid);
                     Map<Long, OSMWay> timestampWayMap = oshWay.getByTimestamp(option.timestamps);
                     for (Map.Entry<Long, OSMWay> timestampWay : timestampWayMap.entrySet()) {
                         Long timestamp = timestampWay.getKey();
@@ -159,8 +157,11 @@ public class HOSM_Select {
                         long lon = node.getLongitude();
                         int [] tags = node.getTags();
                         String s = node.toString();
+                        if(s.contains("320962971")){
+                            System.out.printf("%s \n", s);
+                            System.out.printf("%d, %d \n", lat, lon);
+                        }
 
-                        System.out.printf("%s \n", s);
 
                         if (hasKeyValue(node.getTags(), option.tagKey, option.tagValue)) {
                             Long count = result.get(timestamp);
