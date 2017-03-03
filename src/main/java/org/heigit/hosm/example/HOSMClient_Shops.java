@@ -80,14 +80,14 @@ public class HOSMClient_Shops {
         public CountJob(JobOption option) {
             this.option = option;
             this.localMode = true;
-            this.object_types = new String[]{"way"};
+            this.object_types = new String[]{"way","node"};
         }
 
         public CountJob(final JobOption option, Ignite ignite, final boolean localMode) {
             this.option = option;
             this.localMode = localMode;
             this.ignite = ignite;
-            this.object_types = new String[]{"way"};
+            this.object_types = new String[]{"way","node"};
         }
 
         public CountJob(final JobOption option, Ignite ignite, final boolean localMode, String[] object_types) {
