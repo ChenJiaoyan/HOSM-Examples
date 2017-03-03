@@ -56,10 +56,10 @@ public class HOSM_Select {
 
     public static class JobResult implements Serializable {
         private static final long serialVersionUID = 1L;
-        private final Map<Long, Long> timestampCount;
+        private final Map<Long, ArrayList<String>> timestampSelect;
 
-        public JobResult(final Map<Long, Long> tc) {
-            this.timestampCount = tc;
+        public JobResult(final Map<Long, ArrayList<String>> tc) {
+            this.timestampSelect = tc;
         }
     }
 
@@ -95,11 +95,11 @@ public class HOSM_Select {
 
         @Override
         public Object execute() throws IgniteException {
-            Map<Long, Long> result = new HashMap<>(option.timestamps.size());
+            Map<Long, ArrayList<String>> result = new HashMap<>(option.timestamps.size());
             for (int i = 0; i < this.object_types.length; i++) {
                 switch (object_types[i]) {
                     case "way":
-                        result = printWay(result);
+          //              result = printWay(result);
                         break;
                     case "node":
                         result = printNode(result);
@@ -138,7 +138,7 @@ public class HOSM_Select {
             return result;
         }
 
-        private Map<Long, Long> printNode(Map<Long, Long> result) {
+        private Map<Long, ArrayList<String>> printNode(Map<Long, ArrayList<String>> result) {
             IgniteCache<AffinityKey<Long>, OSHNode> cacheNode = ignite.cache("osm_node");
             SqlQuery<AffinityKey<Long>, OSHNode> sqlNode = new SqlQuery<>(OSHNode.class, "BoundingBox && ?");
             sqlNode.setArgs(option.bbox);
@@ -153,23 +153,16 @@ public class HOSM_Select {
                         Long timestamp = timestampNode.getKey();
                         OSMNode node = timestampNode.getValue();
 
-                        long lat = node.getLatitude();
-                        long lon = node.getLongitude();
-                        int [] tags = node.getTags();
-                        String s = node.toString();
-                        if(s.contains("320962971")){
-                            System.out.printf("%s \n", s);
-                            System.out.printf("%d, %d \n", lat, lon);
-                        }
-
-
                         if (hasKeyValue(node.getTags(), option.tagKey, option.tagValue)) {
-                            Long count = result.get(timestamp);
-                            if (count == null) {
-                                count = Long.valueOf(0);
-                            }
-                            count += 1;
-                            result.put(timestamp, count);
+                            long lat = node.getLatitude();
+                            long lon = node.getLongitude();
+                            int [] tags = node.getTags();
+                            String s = node.toString();
+                            System.out.printf("%s \n", s);
+                            ArrayList<String> r = result.get(timestamp);
+                            r.add(s);
+
+                            result.put(timestamp, r);
                         }
                     }
 
@@ -203,13 +196,13 @@ public class HOSM_Select {
     }
 
 
-    public Map<Long,Long> spatial_temporal_count(String tagKey, ArrayList<Long> times_arr, String polygon_str
+    public Map<Long,ArrayList<String>> spatial_temporal_select(String tagKey, ArrayList<Long> times_arr, String polygon_str
     ) throws ParseException, com.vividsolutions.jts.io.ParseException, IgniteCheckedException {
-        String[] obj_types = new String[]{"way","node"};
-        return spatial_temporal_count(tagKey, null, times_arr, polygon_str, obj_types);
+        String[] obj_types = new String[]{"node"};
+        return spatial_temporal_select(tagKey, null, times_arr, polygon_str, obj_types);
     }
 
-    public Map<Long,Long> spatial_temporal_count(String tagKey, String tagValue, ArrayList<Long> times_arr, String polygon_str,
+    public Map<Long,ArrayList<String>> spatial_temporal_select(String tagKey, String tagValue, ArrayList<Long> times_arr, String polygon_str,
                                                  String[] obj_types) throws ParseException, com.vividsolutions.jts.io.ParseException, IgniteCheckedException {
         Ignition.setClientMode(true);
         IgniteConfiguration icfg = IgnitionEx.loadConfiguration("ignite.xml").getKey();
@@ -225,7 +218,7 @@ public class HOSM_Select {
                 IgniteCompute compute = ignite.compute(ignite.cluster().forRemotes());
                 SelectJob myJob = new SelectJob(option, ignite, false, obj_types);
                 JobResult result = (JobResult) myJob.execute();
-                return result.timestampCount;
+                return result.timestampSelect;
             } else {
                 return null;
             }
@@ -282,13 +275,8 @@ public class HOSM_Select {
 
         System.out.println("#### count the " + tagKey + " #####");
         HOSM_Select client = new HOSM_Select();
-        Map<Long, Long> counts = client.spatial_temporal_count(tagKey, times, polygon_str);
+        Map<Long, ArrayList<String>> counts = client.spatial_temporal_select(tagKey, times, polygon_str);
 
-        for (int i = 0; i < times.size(); i++) {
-            Long t = times.get(i);
-            long count = (counts.get(t) == null) ? 0 : counts.get(t);
-            System.out.printf("%s: %d \n", formatter.format(new Date(t)), count);
-        }
 
     }
 
