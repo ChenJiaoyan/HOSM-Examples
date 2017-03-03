@@ -34,7 +34,7 @@ public class HOSM_Shops {
                 "120.35041809082031 30.104259174773546,119.96177673339844 30.104259174773546,119.96177673339844 30.38720294760581))";
 
         System.out.println("#### count the " + tagKey + " #####");
-        HOSMClient client = new HOSMClient();
+        HOSMClient_Shops client = new HOSMClient_Shops();
         Map<Long, Long> counts = client.spatial_temporal_count(tagKey, times, polygon_str);
 
         for (int i = 0; i < times.size(); i++) {
