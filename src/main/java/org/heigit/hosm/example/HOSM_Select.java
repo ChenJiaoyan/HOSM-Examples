@@ -102,7 +102,7 @@ public class HOSM_Select {
                         result = countWay(result);
                         break;
                     case "node":
-                        result = countNode(result);
+                        result = printNode(result);
                         break;
                     default:
                         break;
@@ -140,7 +140,7 @@ public class HOSM_Select {
             return result;
         }
 
-        private Map<Long, Long> countNode(Map<Long, Long> result) {
+        private Map<Long, Long> printNode(Map<Long, Long> result) {
             IgniteCache<AffinityKey<Long>, OSHNode> cacheNode = ignite.cache("osm_node");
             SqlQuery<AffinityKey<Long>, OSHNode> sqlNode = new SqlQuery<>(OSHNode.class, "BoundingBox && ?");
             sqlNode.setArgs(option.bbox);
@@ -150,13 +150,17 @@ public class HOSM_Select {
                 for (Cache.Entry<AffinityKey<Long>, OSHNode> row : cursor) {
                     OSHNode oshNode = row.getValue();
                     Map<Long, OSMNode> timestampNodeMap = oshNode.getByTimestamp(option.timestamps);
+
                     for (Map.Entry<Long, OSMNode> timestampNode : timestampNodeMap.entrySet()) {
                         Long timestamp = timestampNode.getKey();
                         OSMNode node = timestampNode.getValue();
 
                         long lat = node.getLatitude();
                         long lon = node.getLongitude();
-                        System.out.printf("%d, %d, %d \n", timestamp, lat, lon);
+                        int [] tags = node.getTags();
+                        String s = node.toString();
+
+                        System.out.printf("%s \n", s);
 
                         if (hasKeyValue(node.getTags(), option.tagKey, option.tagValue)) {
                             Long count = result.get(timestamp);
