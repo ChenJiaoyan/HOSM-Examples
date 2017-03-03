@@ -148,17 +148,16 @@ public class HOSM_Select {
 
             try (QueryCursor<Cache.Entry<AffinityKey<Long>, OSHNode>> cursor = cacheNode.query(sqlNode)) {
                 for (Cache.Entry<AffinityKey<Long>, OSHNode> row : cursor) {
-
                     OSHNode oshNode = row.getValue();
-                    long lat = oshNode.getLatitude();
-                    long lon = oshNode.getLongitude();
-
-                    System.out.printf("lat: %d, lon: %d", lat, lon);
-
                     Map<Long, OSMNode> timestampNodeMap = oshNode.getByTimestamp(option.timestamps);
                     for (Map.Entry<Long, OSMNode> timestampNode : timestampNodeMap.entrySet()) {
                         Long timestamp = timestampNode.getKey();
                         OSMNode node = timestampNode.getValue();
+
+                        long lat = node.getLatitude();
+                        long lon = node.getLongitude();
+                        System.out.printf("%d, %d, %d \n", timestamp, lat, lon);
+
                         if (hasKeyValue(node.getTags(), option.tagKey, option.tagValue)) {
                             Long count = result.get(timestamp);
                             if (count == null) {
