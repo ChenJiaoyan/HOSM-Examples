@@ -8,11 +8,7 @@ import org.apache.ignite.cache.affinity.AffinityKey;
 import org.apache.ignite.cache.query.QueryCursor;
 import org.apache.ignite.cache.query.SqlFieldsQuery;
 import org.apache.ignite.cache.query.SqlQuery;
-import org.apache.ignite.cluster.ClusterNode;
-import org.apache.ignite.compute.ComputeJob;
 import org.apache.ignite.compute.ComputeJobAdapter;
-import org.apache.ignite.compute.ComputeJobResult;
-import org.apache.ignite.compute.ComputeTaskAdapter;
 import org.apache.ignite.configuration.IgniteConfiguration;
 import org.apache.ignite.internal.IgnitionEx;
 import org.apache.ignite.resources.IgniteInstanceResource;
@@ -30,10 +26,10 @@ import java.util.*;
 
 /**
  * Created by Rtroilo on 1/19/17.
- * Revised by Jiaoyan on 1/21/17.
- * Latest update: Jan 23, 2017
+ * Latest update: March 3, 2017, by Jiaoyan
  */
-public class HOSM_Shops {
+
+public class HOSM_Select {
 
 
     public static class JobOption implements Serializable {
@@ -199,45 +195,8 @@ public class HOSM_Shops {
             return false;
         }
     }
-/*
-    public static class MyTaskAdapter extends ComputeTaskAdapter<JobOption, JobResult> {
 
-        private static final long serialVersionUID = 1L;
 
-        @Override
-        public Map<? extends ComputeJob, ClusterNode> map(List<ClusterNode> subgrid, JobOption arg)
-                throws IgniteException {
-
-            Map<ComputeJob, ClusterNode> map = new HashMap<>(subgrid.size());
-
-            CountJob myJob = new CountJob(arg);
-            // for every node in the cluster!
-            for (ClusterNode node : subgrid) {
-                map.put(myJob, node);
-            }
-            return map;
-        }
-
-        @Override
-        public JobResult reduce(List<ComputeJobResult> results) throws IgniteException {
-            Map<Long, Long> reducedResult = new HashMap<>();
-            for (ComputeJobResult computeJobResult : results) {
-                JobResult rs = computeJobResult.<JobResult>getData();
-                for (Map.Entry<Long, Long> entry : rs.timestampCount.entrySet()) {
-                    Long timestamp = entry.getKey();
-                    Long count = reducedResult.get(timestamp);
-                    if (count == null) {
-                        count = Long.valueOf(0);
-                    }
-                    count += entry.getValue();
-                    reducedResult.put(timestamp, count);
-                }
-            }
-            return new JobResult(reducedResult);
-        }
-
-    }
-*/
     public Map<Long,Long> spatial_temporal_count(String tagKey, ArrayList<Long> times_arr, String polygon_str
     ) throws ParseException, com.vividsolutions.jts.io.ParseException, IgniteCheckedException {
         String[] obj_types = new String[]{"way","node"};
@@ -316,7 +275,7 @@ public class HOSM_Shops {
                 "120.35041809082031 30.104259174773546,119.96177673339844 30.104259174773546,119.96177673339844 30.38720294760581))";
 
         System.out.println("#### count the " + tagKey + " #####");
-        HOSM_Shops client = new HOSM_Shops();
+        HOSM_Select client = new HOSM_Select();
         Map<Long, Long> counts = client.spatial_temporal_count(tagKey, times, polygon_str);
 
         for (int i = 0; i < times.size(); i++) {
