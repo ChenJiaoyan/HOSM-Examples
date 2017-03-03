@@ -199,7 +199,7 @@ public class HOSM_Shops {
             return false;
         }
     }
-
+/*
     public static class MyTaskAdapter extends ComputeTaskAdapter<JobOption, JobResult> {
 
         private static final long serialVersionUID = 1L;
@@ -237,18 +237,7 @@ public class HOSM_Shops {
         }
 
     }
-
-
-    public Map<Long,Long> spatial_temporal_count(String tagKey, String tagValue, ArrayList<Long> times_arr,
-                                                 String polygon_str) throws ParseException, com.vividsolutions.jts.io.ParseException, IgniteCheckedException {
-        String[] obj_types = new String[]{"way"};
-        return spatial_temporal_count(tagKey, tagValue, times_arr, polygon_str, obj_types);
-    }
-    public Map<Long,Long> spatial_temporal_count(String tagKey, ArrayList<Long> times_arr, String polygon_str,
-                                                 String[] obj_types) throws ParseException, com.vividsolutions.jts.io.ParseException, IgniteCheckedException {
-        return spatial_temporal_count(tagKey, null, times_arr, polygon_str, obj_types);
-    }
-
+*/
     public Map<Long,Long> spatial_temporal_count(String tagKey, ArrayList<Long> times_arr, String polygon_str
     ) throws ParseException, com.vividsolutions.jts.io.ParseException, IgniteCheckedException {
         String[] obj_types = new String[]{"way","node"};
