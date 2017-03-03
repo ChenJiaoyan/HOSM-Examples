@@ -12,7 +12,7 @@ import org.apache.ignite.IgniteCheckedException;
 
 public class HOSM_Shops {
     public static void main(String args[]) throws ParseException, IgniteCheckedException, com.vividsolutions.jts.io.ParseException {
-        String tagKey = "Shop";
+        String tagKey = "building";
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
         String start_time_str = "20100101";
