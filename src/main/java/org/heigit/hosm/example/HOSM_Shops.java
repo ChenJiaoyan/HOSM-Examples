@@ -42,10 +42,8 @@ public class HOSM_Shops {
             long count = (counts.get(t) == null) ? 0 : counts.get(t);
             System.out.printf("%s: %d \n", formatter.format(new Date(t)), count);
         }
+
     }
 
-    public static void read_object_time(String key, String polygon_str, Long time) {
-        HOSMClient client = new HOSMClient();
-    }
 
 }

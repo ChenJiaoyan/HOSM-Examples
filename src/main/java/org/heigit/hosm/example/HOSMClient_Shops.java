@@ -124,6 +124,8 @@ public class HOSMClient_Shops {
             try (QueryCursor<Cache.Entry<AffinityKey<Long>, OSHWay>> cursor = cacheWay.query(sqlWay)) {
                 for (Cache.Entry<AffinityKey<Long>, OSHWay> row : cursor) {
                     OSHWay oshWay = row.getValue();
+                    int userid = oshWay.getUserId();
+                    System.out.printf("countWay, userid: %d",userid);
                     Map<Long, OSMWay> timestampWayMap = oshWay.getByTimestamp(option.timestamps);
                     for (Map.Entry<Long, OSMWay> timestampWay : timestampWayMap.entrySet()) {
                         Long timestamp = timestampWay.getKey();
@@ -150,7 +152,11 @@ public class HOSMClient_Shops {
 
             try (QueryCursor<Cache.Entry<AffinityKey<Long>, OSHNode>> cursor = cacheNode.query(sqlNode)) {
                 for (Cache.Entry<AffinityKey<Long>, OSHNode> row : cursor) {
+
                     OSHNode oshNode = row.getValue();
+                    int userid = oshNode.getUserId();
+                    System.out.printf("countNode, userid: %d",userid);
+
                     Map<Long, OSMNode> timestampNodeMap = oshNode.getByTimestamp(option.timestamps);
                     for (Map.Entry<Long, OSMNode> timestampNode : timestampNodeMap.entrySet()) {
                         Long timestamp = timestampNode.getKey();
