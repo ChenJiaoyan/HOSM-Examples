@@ -63,7 +63,7 @@ public class HOSM_Select {
         }
     }
 
-    public static class CountJob extends ComputeJobAdapter {
+    public static class SelectJob extends ComputeJobAdapter {
         private static final long serialVersionUID = 1L;
         private final JobOption option;
 
@@ -73,20 +73,20 @@ public class HOSM_Select {
 
         private String[] object_types;
 
-        public CountJob(JobOption option) {
+        public SelectJob(JobOption option) {
             this.option = option;
             this.localMode = true;
             this.object_types = new String[]{"way","node"};
         }
 
-        public CountJob(final JobOption option, Ignite ignite, final boolean localMode) {
+        public SelectJob(final JobOption option, Ignite ignite, final boolean localMode) {
             this.option = option;
             this.localMode = localMode;
             this.ignite = ignite;
             this.object_types = new String[]{"way","node"};
         }
 
-        public CountJob(final JobOption option, Ignite ignite, final boolean localMode, String[] object_types) {
+        public SelectJob(final JobOption option, Ignite ignite, final boolean localMode, String[] object_types) {
             this.option = option;
             this.localMode = localMode;
             this.ignite = ignite;
@@ -120,8 +120,8 @@ public class HOSM_Select {
             try (QueryCursor<Cache.Entry<AffinityKey<Long>, OSHWay>> cursor = cacheWay.query(sqlWay)) {
                 for (Cache.Entry<AffinityKey<Long>, OSHWay> row : cursor) {
                     OSHWay oshWay = row.getValue();
-                    int userid = oshWay.getUserId();
-                    System.out.printf("countWay, userid: %d",userid);
+                    //int userid = oshWay.getUserId();
+                    //System.out.printf("countWay, userid: %d",userid);
                     Map<Long, OSMWay> timestampWayMap = oshWay.getByTimestamp(option.timestamps);
                     for (Map.Entry<Long, OSMWay> timestampWay : timestampWayMap.entrySet()) {
                         Long timestamp = timestampWay.getKey();
@@ -150,8 +150,10 @@ public class HOSM_Select {
                 for (Cache.Entry<AffinityKey<Long>, OSHNode> row : cursor) {
 
                     OSHNode oshNode = row.getValue();
-                    int userid = oshNode.getUserId();
-                    System.out.printf("countNode, userid: %d",userid);
+                    long lat = oshNode.getLatitude();
+                    long lon = oshNode.getLongitude();
+
+                    System.out.printf("lat: %d, lon: %d", lat, lon);
 
                     Map<Long, OSMNode> timestampNodeMap = oshNode.getByTimestamp(option.timestamps);
                     for (Map.Entry<Long, OSMNode> timestampNode : timestampNodeMap.entrySet()) {
@@ -217,7 +219,7 @@ public class HOSM_Select {
                 Geometry bbox = r.read(polygon_str);
                 JobOption option = new JobOption(timestamps, bbox, tag_k_n, tag_v_n);
                 IgniteCompute compute = ignite.compute(ignite.cluster().forRemotes());
-                CountJob myJob = new CountJob(option, ignite, false, obj_types);
+                SelectJob myJob = new SelectJob(option, ignite, false, obj_types);
                 JobResult result = (JobResult) myJob.execute();
                 return result.timestampCount;
             } else {
