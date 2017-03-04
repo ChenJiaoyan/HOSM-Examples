@@ -99,7 +99,7 @@ public class HOSM_Select {
             for (int i = 0; i < this.object_types.length; i++) {
                 switch (object_types[i]) {
                     case "way":
-                        //              result = printWay(result);
+                        result = printWay(result);
                         break;
                     case "node":
                         result = printNode(result);
@@ -111,7 +111,7 @@ public class HOSM_Select {
             return new JobResult(result);
         }
 
-        private Map<Long, Long> printWay(Map<Long, Long> result) {
+        private Map<Long, ArrayList<String>> printWay(Map<Long, ArrayList<String>> result) {
             IgniteCache<AffinityKey<Long>, OSHWay> cacheWay = ignite.cache("osm_way");
             SqlQuery<AffinityKey<Long>, OSHWay> sqlWay = new SqlQuery<>(OSHWay.class, "BoundingBox && ?");
             sqlWay.setArgs(option.bbox);
@@ -125,12 +125,23 @@ public class HOSM_Select {
                         Long timestamp = timestampWay.getKey();
                         OSMWay way = timestampWay.getValue();
                         if (hasKeyValue(way.getTags(), option.tagKey, option.tagValue)) {
-                            Long count = result.get(timestamp);
-                            if (count == null) {
-                                count = Long.valueOf(0);
+                            //double lat = way.getLatitude() * GEOM_PRECISION;
+                            //double lon = way.getLongitude() * GEOM_PRECISION;
+                            int[] tags = way.getTags();
+                            String tags_s = tags2string(tags);
+                            String s = way.toString();
+                            String node_id = s.split(" ")[1].split(":")[1];
+                            s = String.format("way %s %s", node_id, tags_s);
+                            if (result.containsKey(timestamp)) {
+                                ArrayList<String> r = result.get(timestamp);
+                                r.add(s);
+                                result.put(timestamp, r);
+                            } else {
+                                ArrayList<String> r = new ArrayList<>();
+                                r.add(s);
+                                result.put(timestamp, r);
                             }
-                            count += 1;
-                            result.put(timestamp, count);
+
                         }
                     }
                 }
@@ -161,8 +172,7 @@ public class HOSM_Select {
                             String tags_s = tags2string(tags);
                             String s = node.toString();
                             String node_id = s.split(" ")[1].split(":")[1];
-                            s = String.format("%s %f %f %s", node_id, lat, lon, tags_s);
-                            System.out.printf("%s \n", s);
+                            s = String.format("node %s %f %f %s", node_id, lat, lon, tags_s);
                             if (result.containsKey(timestamp)) {
                                 ArrayList<String> r = result.get(timestamp);
                                 r.add(s);
@@ -298,7 +308,6 @@ public class HOSM_Select {
             it.add(Calendar.MONTH, step_month);
         }
 
-        //String polygon_str = "POLYGON((12.297821044921875 45.45174687098183,12.371635437011719 45.45174687098183,12.371635437011719 45.4187415580181,12.297821044921875 45.4187415580181,12.297821044921875 45.45174687098183))";
         String polygon_str = "POLYGON((119.96177673339844 30.38720294760581,120.35041809082031 30.38720294760581," +
                 "120.35041809082031 30.104259174773546,119.96177673339844 30.104259174773546,119.96177673339844 30.38720294760581))";
 
