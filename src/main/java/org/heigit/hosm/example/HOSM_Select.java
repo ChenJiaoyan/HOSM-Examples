@@ -144,6 +144,7 @@ public class HOSM_Select {
             sqlNode.setArgs(option.bbox);
             sqlNode.setLocal(localMode);
 
+            double GEOM_PRECISION = .000000001;
             try (QueryCursor<Cache.Entry<AffinityKey<Long>, OSHNode>> cursor = cacheNode.query(sqlNode)) {
                 for (Cache.Entry<AffinityKey<Long>, OSHNode> row : cursor) {
                     OSHNode oshNode = row.getValue();
@@ -154,14 +155,15 @@ public class HOSM_Select {
                         OSMNode node = timestampNode.getValue();
 
                         if (hasKeyValue(node.getTags(), option.tagKey, option.tagValue)) {
-                            long lat = node.getLatitude();
-                            long lon = node.getLongitude();
+                            double lat = node.getLatitude() * GEOM_PRECISION;
+                            double lon = node.getLongitude() * GEOM_PRECISION;
                             int [] tags = node.getTags();
                             String s = node.toString();
                             System.out.printf("%s \n", s);
+                            String node_id = s.split(" ")[1].split(":")[1];
+
                             ArrayList<String> r = result.get(timestamp);
                             r.add(s);
-
                             result.put(timestamp, r);
                         }
                     }
