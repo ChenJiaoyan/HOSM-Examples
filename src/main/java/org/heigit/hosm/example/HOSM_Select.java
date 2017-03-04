@@ -162,7 +162,7 @@ public class HOSM_Select {
                             String s = node.toString();
                             System.out.printf("%s \n", s);
                             String node_id = s.split(" ")[1].split(":")[1];
-                            s = String.format("%s %lf %lf %S", node_id, lat, lon, tags_s);
+                            s = String.format("%s %lf %lf %s", node_id, lat, lon, tags_s);
 
                             if (result.containsKey(timestamp)) {
                                 ArrayList<String> r = result.get(timestamp);
