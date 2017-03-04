@@ -76,14 +76,14 @@ public class HOSM_Select {
         public SelectJob(JobOption option) {
             this.option = option;
             this.localMode = true;
-            this.object_types = new String[]{"way","node"};
+            this.object_types = new String[]{"way", "node"};
         }
 
         public SelectJob(final JobOption option, Ignite ignite, final boolean localMode) {
             this.option = option;
             this.localMode = localMode;
             this.ignite = ignite;
-            this.object_types = new String[]{"way","node"};
+            this.object_types = new String[]{"way", "node"};
         }
 
         public SelectJob(final JobOption option, Ignite ignite, final boolean localMode, String[] object_types) {
@@ -99,7 +99,7 @@ public class HOSM_Select {
             for (int i = 0; i < this.object_types.length; i++) {
                 switch (object_types[i]) {
                     case "way":
-          //              result = printWay(result);
+                        //              result = printWay(result);
                         break;
                     case "node":
                         result = printNode(result);
@@ -157,25 +157,48 @@ public class HOSM_Select {
                         if (hasKeyValue(node.getTags(), option.tagKey, option.tagValue)) {
                             double lat = node.getLatitude() * GEOM_PRECISION;
                             double lon = node.getLongitude() * GEOM_PRECISION;
-                            int [] tags = node.getTags();
+                            int[] tags = node.getTags();
+                            String tags_s = tags2string(tags);
                             String s = node.toString();
                             System.out.printf("%s \n", s);
                             String node_id = s.split(" ")[1].split(":")[1];
-                            if(result.containsKey(timestamp)) {
+                            s = String.format("%s %lf %lf %S", node_id, lat, lon, tags_s);
+
+                            if (result.containsKey(timestamp)) {
                                 ArrayList<String> r = result.get(timestamp);
                                 r.add(s);
                                 result.put(timestamp, r);
-                            }else{
+                            } else {
                                 ArrayList<String> r = new ArrayList<>();
                                 r.add(s);
-                                result.put(timestamp,r);
+                                result.put(timestamp, r);
                             }
+
                         }
                     }
 
                 }
             }
             return result;
+        }
+
+
+        private String tags2string(int[] tags) {
+            if (tags == null || tags.length == 0) {
+                return "empty";
+            } else if (tags.length % 2 != 0) {
+                return "wrong";
+            } else {
+                IgniteCache<Integer, OSMTag> cacheTags = ignite.cache("osm_tag");
+                String s = "";
+                for (int i = 0; i < tags.length; i = i + 2) {
+                    int key_id = tags[i];
+                    int value_id = tags[i + 1];
+                    OSMTag tag = cacheTags.get(key_id);
+                    s = s + String.format("%s:%s", tag.getKey(), tag.getValue(value_id));
+                }
+                return s;
+            }
         }
 
         /*
@@ -203,14 +226,14 @@ public class HOSM_Select {
     }
 
 
-    public Map<Long,ArrayList<String>> spatial_temporal_select(String tagKey, ArrayList<Long> times_arr, String polygon_str
+    public Map<Long, ArrayList<String>> spatial_temporal_select(String tagKey, ArrayList<Long> times_arr, String polygon_str
     ) throws ParseException, com.vividsolutions.jts.io.ParseException, IgniteCheckedException {
         String[] obj_types = new String[]{"node"};
         return spatial_temporal_select(tagKey, null, times_arr, polygon_str, obj_types);
     }
 
-    public Map<Long,ArrayList<String>> spatial_temporal_select(String tagKey, String tagValue, ArrayList<Long> times_arr, String polygon_str,
-                                                 String[] obj_types) throws ParseException, com.vividsolutions.jts.io.ParseException, IgniteCheckedException {
+    public Map<Long, ArrayList<String>> spatial_temporal_select(String tagKey, String tagValue, ArrayList<Long> times_arr, String polygon_str,
+                                                                String[] obj_types) throws ParseException, com.vividsolutions.jts.io.ParseException, IgniteCheckedException {
         Ignition.setClientMode(true);
         IgniteConfiguration icfg = IgnitionEx.loadConfiguration("ignite.xml").getKey();
         try (Ignite ignite = Ignition.start(icfg)) {
