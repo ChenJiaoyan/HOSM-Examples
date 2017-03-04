@@ -161,10 +161,15 @@ public class HOSM_Select {
                             String s = node.toString();
                             System.out.printf("%s \n", s);
                             String node_id = s.split(" ")[1].split(":")[1];
-
-                            ArrayList<String> r = result.get(timestamp);
-                            r.add(s);
-                            result.put(timestamp, r);
+                            if(result.containsKey(timestamp)) {
+                                ArrayList<String> r = result.get(timestamp);
+                                r.add(s);
+                                result.put(timestamp, r);
+                            }else{
+                                ArrayList<String> r = new ArrayList<>();
+                                r.add(s);
+                                result.put(timestamp,r);
+                            }
                         }
                     }
 
