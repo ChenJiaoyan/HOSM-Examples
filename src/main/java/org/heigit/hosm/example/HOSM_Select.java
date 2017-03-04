@@ -189,7 +189,7 @@ public class HOSM_Select {
             } else if (tags.length % 2 != 0) {
                 return "wrong";
             } else {
-                IgniteCache<Integer, OSMTag> cacheTags = ignite.cache("osm_tag");
+                IgniteCache<Integer, OSMTag> cacheTags = ignite.cache("osm_tags");
                 String s = "";
                 for (int i = 0; i < tags.length; i = i + 2) {
                     int key_id = tags[i];
