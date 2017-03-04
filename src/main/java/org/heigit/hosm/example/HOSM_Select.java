@@ -160,10 +160,9 @@ public class HOSM_Select {
                             int[] tags = node.getTags();
                             String tags_s = tags2string(tags);
                             String s = node.toString();
-                            System.out.printf("%s \n", s);
                             String node_id = s.split(" ")[1].split(":")[1];
                             s = String.format("%s %f %f %s", node_id, lat, lon, tags_s);
-
+                            System.out.printf("%s \n", s);
                             if (result.containsKey(timestamp)) {
                                 ArrayList<String> r = result.get(timestamp);
                                 r.add(s);
