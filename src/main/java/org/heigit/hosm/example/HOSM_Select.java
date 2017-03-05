@@ -304,6 +304,7 @@ public class HOSM_Select {
     }
 
     public static void main(String args[]) throws ParseException, IgniteCheckedException, com.vividsolutions.jts.io.ParseException {
+        System.out.printf(args[0]);
         String dir = args[1];
         File f = new File(dir);
         if(f.exists()){
