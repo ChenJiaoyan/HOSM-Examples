@@ -245,6 +245,7 @@ public class HOSM_Select {
         IgniteConfiguration icfg = IgnitionEx.loadConfiguration("ignite.xml").getKey();
         try (Ignite ignite = Ignition.start(icfg)) {
             int[] tags = get_tag_value(ignite, tagKey, tagValue);
+            System.out.println(tags);
             if (tags != null) {
                 int tag_k_n = tags[0];
                 int tag_v_n = tags[1];
@@ -342,7 +343,7 @@ public class HOSM_Select {
 
         System.out.println("#### select the objects with tags: '" + Arrays.toString(tags) + "' #####");
         HOSM_Select client = new HOSM_Select();
-
+        System.out.println(tags[0]);
         Map<Long, ArrayList<String>> results = client.spatial_temporal_select(tags[0], null, times, polygon_str, obj_types);
 
         client.save2file(f,times,results);
