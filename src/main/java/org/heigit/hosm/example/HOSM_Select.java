@@ -14,8 +14,10 @@ import org.apache.ignite.configuration.IgniteConfiguration;
 import org.apache.ignite.internal.IgnitionEx;
 import org.apache.ignite.resources.IgniteInstanceResource;
 import org.heigit.bigspatialdata.osh.ignite.model.osh.OSHNode;
+import org.heigit.bigspatialdata.osh.ignite.model.osh.OSHRelation;
 import org.heigit.bigspatialdata.osh.ignite.model.osh.OSHWay;
 import org.heigit.bigspatialdata.osh.ignite.model.osm.OSMNode;
+import org.heigit.bigspatialdata.osh.ignite.model.osm.OSMRelation;
 import org.heigit.bigspatialdata.osh.ignite.model.osm.OSMTag;
 import org.heigit.bigspatialdata.osh.ignite.model.osm.OSMWay;
 
@@ -79,7 +81,7 @@ public class HOSM_Select {
             this.option = option;
             this.localMode = localMode;
             this.ignite = ignite;
-            this.object_types = new String[]{"way", "node"};
+            this.object_types = new String[]{"way", "node","relation"};
         }
 
         public SelectJob(final JobOption option, Ignite ignite, final boolean localMode, String[] object_types) {
@@ -100,11 +102,55 @@ public class HOSM_Select {
                     case "node":
                         result = printNode(result);
                         break;
+                    case "relation":
+                        result = printRelation(result);
+                        break;
                     default:
                         break;
                 }
             }
             return new JobResult(result);
+        }
+
+        private Map<Long, ArrayList<String>> printRelation(Map<Long, ArrayList<String>> result) {
+            IgniteCache<AffinityKey<Long>, OSHRelation> cacheRelation = ignite.cache("osm_relation");
+            SqlQuery<AffinityKey<Long>, OSHRelation> sqlRelation = new SqlQuery<>(OSHRelation.class, "BoundingBox && ?");
+            sqlRelation.setArgs(option.bbox);
+            sqlRelation.setLocal(localMode);
+
+            try (QueryCursor<Cache.Entry<AffinityKey<Long>, OSHRelation>> cursor = cacheRelation.query(sqlRelation)) {
+                for (Cache.Entry<AffinityKey<Long>, OSHRelation> row : cursor) {
+                    OSHRelation oshRelation = row.getValue();
+                    Map<Long, OSMRelation> timestampRelationMap = oshRelation.getByTimestamp(option.timestamps);
+                    for (Map.Entry<Long, OSMRelation> timestampRelation : timestampRelationMap.entrySet()) {
+                        Long timestamp = timestampRelation.getKey();
+                        OSMRelation relation = timestampRelation.getValue();
+                        Coordinate [] c= relation.getBoundingBox().getCentroid().getCoordinates();
+                        double x = c[0].x;
+                        double y = c[0].y;
+                        int l = c.length;
+                        System.out.printf("l: %d \n", l);
+                        int[] relation_tags = relation.getTags();
+                        if (hasKeyValue(relation_tags, option.tag_ids)) {
+                            String tags_s = tags2string(relation_tags);
+                            String relation_id = relation.toString().split(" ")[1].split(":")[1];
+                            String s = String.format("relation,%s,,,%s", relation_id, tags_s);
+                            //System.out.printf("relation_id: %s, %f,%f \n",relation_id,x,y);
+                            if (result.containsKey(timestamp)) {
+                                ArrayList<String> r = result.get(timestamp);
+                                r.add(s);
+                                result.put(timestamp, r);
+                            } else {
+                                ArrayList<String> r = new ArrayList<>();
+                                r.add(s);
+                                result.put(timestamp, r);
+                            }
+
+                        }
+                    }
+                }
+            }
+            return result;
         }
 
         private Map<Long, ArrayList<String>> printWay(Map<Long, ArrayList<String>> result) {
@@ -123,12 +169,14 @@ public class HOSM_Select {
                         Coordinate [] c= way.getBoundingBox().getCentroid().getCoordinates();
                         double x = c[0].x;
                         double y = c[0].y;
+                        int l = c.length;
+                        System.out.printf("l: %d \n", l);
                         int[] way_tags = way.getTags();
                         if (hasKeyValue(way_tags, option.tag_ids)) {
                             String tags_s = tags2string(way_tags);
                             String way_id = way.toString().split(" ")[1].split(":")[1];
                             String s = String.format("way,%s,,,%s", way_id, tags_s);
-                            System.out.printf("way_id: %s, %f,%f \n",way_id,x,y);
+                            //System.out.printf("way_id: %s, %f,%f \n",way_id,x,y);
                             if (result.containsKey(timestamp)) {
                                 ArrayList<String> r = result.get(timestamp);
                                 r.add(s);
@@ -331,7 +379,7 @@ public class HOSM_Select {
 
         String polygon_str = "POLYGON((117.762451171875 32.12154573409534,122.530517578125 32.12154573409534," +
                 "122.530517578125 28.199742006199717,117.762451171875 28.199742006199717,117.762451171875 32.12154573409534))";
-        String[] obj_types = new String[]{"node", "way"};
+        String[] obj_types = new String[]{"node", "way", "relation"};
 
         System.out.println("#### select the objects with tags: '" + Arrays.toString(tags) + "' #####");
         HOSM_Select client = new HOSM_Select();
