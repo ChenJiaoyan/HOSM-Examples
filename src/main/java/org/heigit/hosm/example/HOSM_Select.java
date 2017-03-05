@@ -19,6 +19,7 @@ import org.heigit.bigspatialdata.osh.ignite.model.osm.OSMTag;
 import org.heigit.bigspatialdata.osh.ignite.model.osm.OSMWay;
 
 import javax.cache.Cache;
+import java.io.File;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -131,7 +132,8 @@ public class HOSM_Select {
                             String tags_s = tags2string(tags);
                             String s = way.toString();
                             String node_id = s.split(" ")[1].split(":")[1];
-                            s = String.format("way %s %s", node_id, tags_s);
+                            s = String.format("way,%s,,,%s", node_id, tags_s);
+                            System.out.printf("%s \n",s);
                             if (result.containsKey(timestamp)) {
                                 ArrayList<String> r = result.get(timestamp);
                                 r.add(s);
@@ -172,7 +174,7 @@ public class HOSM_Select {
                             String tags_s = tags2string(tags);
                             String s = node.toString();
                             String node_id = s.split(" ")[1].split(":")[1];
-                            s = String.format("node %s %f %f %s", node_id, lat, lon, tags_s);
+                            s = String.format("node,%s,%f,%f,%s", node_id, lat, lon, tags_s);
                             if (result.containsKey(timestamp)) {
                                 ArrayList<String> r = result.get(timestamp);
                                 r.add(s);
@@ -237,7 +239,7 @@ public class HOSM_Select {
 
     public Map<Long, ArrayList<String>> spatial_temporal_select(String tagKey, ArrayList<Long> times_arr, String polygon_str
     ) throws ParseException, com.vividsolutions.jts.io.ParseException, IgniteCheckedException {
-        String[] obj_types = new String[]{"node"};
+        String[] obj_types = new String[]{"node","way"};
         return spatial_temporal_select(tagKey, null, times_arr, polygon_str, obj_types);
     }
 
@@ -290,7 +292,27 @@ public class HOSM_Select {
         return new int[]{tag_k_n, tag_v_n};
     }
 
+    private void save2file(String dir, ArrayList<Long> times, Map<Long, ArrayList<String>> results){
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+        for(int i=0; i<times.size();i++){
+            long t = times.get(i);
+            ArrayList<String> rs = results.get(t);
+            Date resultdate = new Date(t);
+            String ts = formatter.format(resultdate);
+        }
+    }
+
     public static void main(String args[]) throws ParseException, IgniteCheckedException, com.vividsolutions.jts.io.ParseException {
+        String dir = args[1];
+        File f = new File(dir);
+        if(f.exists()){
+            System.out.printf("the output exist \n");
+            System.exit(0);
+        }else{
+            f.mkdir();
+        }
+
         String tagKey = "shop";
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
@@ -311,11 +333,11 @@ public class HOSM_Select {
         String polygon_str = "POLYGON((119.96177673339844 30.38720294760581,120.35041809082031 30.38720294760581," +
                 "120.35041809082031 30.104259174773546,119.96177673339844 30.104259174773546,119.96177673339844 30.38720294760581))";
 
-        System.out.println("#### count the " + tagKey + " #####");
+        System.out.println("#### select the objects with tag key '" + tagKey + "' #####");
         HOSM_Select client = new HOSM_Select();
-        Map<Long, ArrayList<String>> counts = client.spatial_temporal_select(tagKey, times, polygon_str);
+        Map<Long, ArrayList<String>> results = client.spatial_temporal_select(tagKey, times, polygon_str);
 
-
+//        client.save2file(dir,times,results);
     }
 
 
