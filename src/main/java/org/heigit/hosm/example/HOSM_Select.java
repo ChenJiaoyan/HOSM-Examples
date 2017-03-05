@@ -1,6 +1,7 @@
 
 package org.heigit.hosm.example;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.WKTReader;
 import org.apache.ignite.*;
@@ -119,11 +120,15 @@ public class HOSM_Select {
                     for (Map.Entry<Long, OSMWay> timestampWay : timestampWayMap.entrySet()) {
                         Long timestamp = timestampWay.getKey();
                         OSMWay way = timestampWay.getValue();
+                        Coordinate [] c= way.getBoundingBox().getCentroid().getCoordinates();
+                        double x = c[0].x;
+                        double y = c[0].y;
                         int[] way_tags = way.getTags();
                         if (hasKeyValue(way_tags, option.tag_ids)) {
                             String tags_s = tags2string(way_tags);
-                            String node_id = way.toString().split(" ")[1].split(":")[1];
-                            String s = String.format("way,%s,,,%s", node_id, tags_s);
+                            String way_id = way.toString().split(" ")[1].split(":")[1];
+                            String s = String.format("way,%s,,,%s", way_id, tags_s);
+                            System.out.printf("way_id: %s, %f,%f \n",way_id,x,y);
                             if (result.containsKey(timestamp)) {
                                 ArrayList<String> r = result.get(timestamp);
                                 r.add(s);
@@ -249,7 +254,7 @@ public class HOSM_Select {
             List<List<?>> rows = cacheTags
                     .query(new SqlFieldsQuery("select _key,values from OSMTag where key = ?").setArgs(key)).getAll();
             if (rows == null || rows.isEmpty()) {
-                System.out.printf("%s: empty in osm_tags cache", key);
+                System.out.printf("%s: empty in osm_tags cache \n", key);
                 continue;
             }
             int key_id = ((Integer) rows.get(0).get(0)).intValue();
