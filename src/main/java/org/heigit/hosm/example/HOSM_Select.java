@@ -135,7 +135,6 @@ public class HOSM_Select {
                             String s = way.toString();
                             String node_id = s.split(" ")[1].split(":")[1];
                             s = String.format("way,%s,,,%s", node_id, tags_s);
-                            System.out.printf("%s \n",s);
                             if (result.containsKey(timestamp)) {
                                 ArrayList<String> r = result.get(timestamp);
                                 r.add(s);
@@ -245,7 +244,7 @@ public class HOSM_Select {
         return spatial_temporal_select(tagKey, null, times_arr, polygon_str, obj_types);
     }
 
-    public Map<Long, ArrayList<String>> spatial_temporal_select(String tagKey, String tagValue, ArrayList<Long> times_arr, String polygon_str,
+    public Map<Long, ArrayList<String>> spatial_temporal_select(String tagKey, String tagValue, ArrayList<Long> times_arr,String polygon_str,
                                                                 String[] obj_types) throws ParseException, com.vividsolutions.jts.io.ParseException, IgniteCheckedException {
         Ignition.setClientMode(true);
         IgniteConfiguration icfg = IgnitionEx.loadConfiguration("ignite.xml").getKey();
@@ -302,7 +301,7 @@ public class HOSM_Select {
             ArrayList<String> rs = results.get(t);
             Date resultdate = new Date(t);
             String ts = formatter.format(resultdate);
-            String fname = f.getAbsolutePath() + "\\" + ts;
+            String fname = f.getAbsolutePath() + "/" + ts;
             File tf = new File(fname);
             tf.createNewFile();
             FileWriter fileWriter = new FileWriter(tf);
@@ -310,6 +309,7 @@ public class HOSM_Select {
                 fileWriter.write(r + "\n");
             }
             fileWriter.close();
+            System.out.printf("");
         }
     }
 
@@ -341,8 +341,8 @@ public class HOSM_Select {
             it.add(Calendar.MONTH, step_month);
         }
 
-        String polygon_str = "POLYGON((119.96177673339844 30.38720294760581,120.35041809082031 30.38720294760581," +
-                "120.35041809082031 30.104259174773546,119.96177673339844 30.104259174773546,119.96177673339844 30.38720294760581))";
+        String polygon_str = "POLYGON((117.762451171875 32.12154573409534,122.530517578125 32.12154573409534," +
+                "122.530517578125 28.199742006199717,117.762451171875 28.199742006199717,117.762451171875 32.12154573409534))";
 
         System.out.println("#### select the objects with tag key '" + tagKey + "' #####");
         HOSM_Select client = new HOSM_Select();
