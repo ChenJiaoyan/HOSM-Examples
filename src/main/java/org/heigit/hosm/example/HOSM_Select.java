@@ -194,7 +194,7 @@ public class HOSM_Select {
                     int key_id = tags[i];
                     int value_id = tags[i + 1];
                     OSMTag tag = cacheTags.get(key_id);
-                    s = s + String.format("%s:%s", tag.getKey(), tag.getValue(value_id)) + ";";
+                    s = s + String.format("%s;%s", tag.getKey(), tag.getValue(value_id)) + " ";
                 }
                 return s;
             }
@@ -245,7 +245,7 @@ public class HOSM_Select {
         ArrayList<int[]> tag_ids = new ArrayList<>();
         IgniteCache<Integer, OSMTag> cacheTags = ignite.cache("osm_tags");
         for (String tag : tags) {
-            String key = tag.split(":")[0];
+            String key = tag.split(";")[0];
             List<List<?>> rows = cacheTags
                     .query(new SqlFieldsQuery("select _key,values from OSMTag where key = ?").setArgs(key)).getAll();
             if (rows == null || rows.isEmpty()) {
@@ -254,9 +254,9 @@ public class HOSM_Select {
             int key_id = ((Integer) rows.get(0).get(0)).intValue();
             Object[] values = (Object[]) rows.get(0).get(1);
 
-            if (tag.split(":").length > 1) {
-                String value = tag.split(":")[1];
-                String[] value_split = tag.split(":")[1].split(",");
+            if (tag.split(";").length > 1) {
+                String value = tag.split(";")[1];
+                String[] value_split = tag.split(";")[1].split(",");
                 Arrays.sort(value_split);
                 for (int i = 0; i < values.length; i++) {
                     String value_i = (String) values[i];
@@ -306,7 +306,7 @@ public class HOSM_Select {
             f.mkdir();
         }
 
-        String[] tags = new String[]{"shop", "building:commercial"};
+        String[] tags = new String[]{"shop", "disused:shop", "shop_1", "old_shop", "was_shop"};
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
         String start_time_str = "20100101";
