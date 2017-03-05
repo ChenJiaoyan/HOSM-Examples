@@ -128,8 +128,6 @@ public class HOSM_Select {
                         Coordinate [] c= relation.getBoundingBox().getCentroid().getCoordinates();
                         double x = c[0].x;
                         double y = c[0].y;
-                        int l = c.length;
-                        System.out.printf("l: %d \n", l);
                         int[] relation_tags = relation.getTags();
                         if (hasKeyValue(relation_tags, option.tag_ids)) {
                             String tags_s = tags2string(relation_tags);
@@ -169,8 +167,6 @@ public class HOSM_Select {
                         Coordinate [] c= way.getBoundingBox().getCentroid().getCoordinates();
                         double x = c[0].x;
                         double y = c[0].y;
-                        int l = c.length;
-                        System.out.printf("l: %d \n", l);
                         int[] way_tags = way.getTags();
                         if (hasKeyValue(way_tags, option.tag_ids)) {
                             String tags_s = tags2string(way_tags);
