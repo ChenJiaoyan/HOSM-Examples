@@ -231,6 +231,9 @@ public class HOSM_Select {
         IgniteConfiguration icfg = IgnitionEx.loadConfiguration("ignite.xml").getKey();
         try (Ignite ignite = Ignition.start(icfg)) {
             ArrayList<int[]> tag_ids = get_tag_id(ignite, tags);
+            for(int [] tag_id:tag_ids){
+                System.out.printf("key_id: %d, value_id: %d",tag_id[0],tag_id[1]);
+            }
             if (tag_ids != null && tag_ids.size() > 0) {
                 WKTReader r = new WKTReader();
                 Geometry bbox = r.read(polygon_str);
