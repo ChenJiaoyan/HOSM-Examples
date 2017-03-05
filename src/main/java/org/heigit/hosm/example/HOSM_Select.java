@@ -249,6 +249,7 @@ public class HOSM_Select {
             List<List<?>> rows = cacheTags
                     .query(new SqlFieldsQuery("select _key,values from OSMTag where key = ?").setArgs(key)).getAll();
             if (rows == null || rows.isEmpty()) {
+                System.out.printf("%s: empty in osm_tags cache", key);
                 continue;
             }
             int key_id = ((Integer) rows.get(0).get(0)).intValue();
