@@ -285,9 +285,11 @@ public class HOSM_Select {
             Date resultdate = new Date(t);
             String ts = formatter.format(resultdate);
             if(rs==null) {
-                System.out.println(ts);
+                System.out.println(ts + ": 0 records");
                 continue;
             }
+            System.out.println("------------------------------------------");
+
             String fname = f.getAbsolutePath() + "/" + ts + ".csv";
             File tf = new File(fname);
             tf.createNewFile();
@@ -296,7 +298,7 @@ public class HOSM_Select {
                 fileWriter.write(r + "\n");
             }
             fileWriter.close();
-            System.out.printf("");
+            System.out.printf("%s: %d records", ts,rs.size() );
         }
     }
 
