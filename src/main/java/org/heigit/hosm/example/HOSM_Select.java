@@ -232,10 +232,9 @@ public class HOSM_Select {
         try (Ignite ignite = Ignition.start(icfg)) {
             ArrayList<int[]> tag_ids = get_tag_id(ignite, tags);
             if (tag_ids != null && tag_ids.size() > 0) {
-                List<Long> timestamps = times_arr;
                 WKTReader r = new WKTReader();
                 Geometry bbox = r.read(polygon_str);
-                JobOption option = new JobOption(timestamps, bbox, tag_ids);
+                JobOption option = new JobOption(times_arr, bbox, tag_ids);
                 IgniteCompute compute = ignite.compute(ignite.cluster().forRemotes());
                 SelectJob myJob = new SelectJob(option, ignite, false, obj_types);
                 JobResult result = (JobResult) myJob.execute();
@@ -285,6 +284,10 @@ public class HOSM_Select {
             ArrayList<String> rs = results.get(t);
             Date resultdate = new Date(t);
             String ts = formatter.format(resultdate);
+            if(rs==null) {
+                System.out.println(ts);
+                continue;
+            }
             String fname = f.getAbsolutePath() + "/" + ts + ".csv";
             File tf = new File(fname);
             tf.createNewFile();
