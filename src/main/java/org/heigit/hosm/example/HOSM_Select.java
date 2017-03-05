@@ -20,6 +20,8 @@ import org.heigit.bigspatialdata.osh.ignite.model.osm.OSMWay;
 
 import javax.cache.Cache;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -292,7 +294,7 @@ public class HOSM_Select {
         return new int[]{tag_k_n, tag_v_n};
     }
 
-    private void save2file(File f, ArrayList<Long> times, Map<Long, ArrayList<String>> results){
+    private void save2file(File f, ArrayList<Long> times, Map<Long, ArrayList<String>> results) throws IOException {
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
         for(int i=0; i<times.size();i++){
@@ -300,12 +302,18 @@ public class HOSM_Select {
             ArrayList<String> rs = results.get(t);
             Date resultdate = new Date(t);
             String ts = formatter.format(resultdate);
-            String fname = f.getAbsolutePath() + ts;
-            System.out.printf("%s \n", fname);
+            String fname = f.getAbsolutePath() + "\\" + ts;
+            File tf = new File(fname);
+            tf.createNewFile();
+            FileWriter fileWriter = new FileWriter(tf);
+            for(String r:rs){
+                fileWriter.write(r + "\n");
+            }
+            fileWriter.close();
         }
     }
 
-    public static void main(String args[]) throws ParseException, IgniteCheckedException, com.vividsolutions.jts.io.ParseException {
+    public static void main(String args[]) throws ParseException, IgniteCheckedException, com.vividsolutions.jts.io.ParseException, IOException {
         String dir = args[0];
         File f = new File(dir);
         if(f.exists()){
