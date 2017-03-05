@@ -94,7 +94,6 @@ public class HOSM_Select {
         @Override
         public Object execute() throws IgniteException {
             Map<Long, ArrayList<String>> result = new HashMap<>(option.timestamps.size());
-            System.out.printf("%s n", Arrays.toString(this.object_types));
             for (int i = 0; i < this.object_types.length; i++) {
                 switch (object_types[i]) {
                     case "way":
@@ -104,7 +103,6 @@ public class HOSM_Select {
                         result = printNode(result);
                         break;
                     case "relation":
-                        System.out.printf("in relation \n");
                         result = printRelation(result);
                         break;
                     default:
@@ -114,6 +112,7 @@ public class HOSM_Select {
             return new JobResult(result);
         }
 
+        //this function currently has some problem: read nothing!
         private Map<Long, ArrayList<String>> printRelation(Map<Long, ArrayList<String>> result) {
             IgniteCache<AffinityKey<Long>, OSHRelation> cacheRelation = ignite.cache("osm_relation");
             SqlQuery<AffinityKey<Long>, OSHRelation> sqlRelation = new SqlQuery<>(OSHRelation.class, "BoundingBox && ?");
@@ -166,6 +165,7 @@ public class HOSM_Select {
                     for (Map.Entry<Long, OSMWay> timestampWay : timestampWayMap.entrySet()) {
                         Long timestamp = timestampWay.getKey();
                         OSMWay way = timestampWay.getValue();
+
                         Coordinate [] c= way.getBoundingBox().getCentroid().getCoordinates();
                         double x = c[0].x;
                         double y = c[0].y;
