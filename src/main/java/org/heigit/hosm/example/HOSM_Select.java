@@ -173,7 +173,12 @@ public class HOSM_Select {
                         if (hasKeyValue(way_tags, option.tag_ids)) {
                             String tags_s = tags2string(way_tags);
                             String way_id = way.toString().split(" ")[1].split(":")[1];
-                            String s = String.format("way,%s,,,%s", way_id, tags_s);
+                            String s = "";
+                            if(x==0 || y==0){
+                                s = String.format("way,%s,,,%s", way_id, tags_s);
+                            }else{
+                                s = String.format("way,%s,%f,%f,%s", way_id, x,y,tags_s);
+                            }
                             //System.out.printf("way_id: %s, %f,%f \n",way_id,x,y);
                             if (result.containsKey(timestamp)) {
                                 ArrayList<String> r = result.get(timestamp);
