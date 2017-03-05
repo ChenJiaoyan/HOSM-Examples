@@ -314,7 +314,7 @@ public class HOSM_Select {
             f.mkdir();
         }
 
-        String[] tags = new String[]{"shop"};
+        String[] tags = new String[]{"shop","building:commercial"};
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
         String start_time_str = "20100101";
