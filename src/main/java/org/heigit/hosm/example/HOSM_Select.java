@@ -288,7 +288,6 @@ public class HOSM_Select {
                 System.out.println(ts + ": 0 records");
                 continue;
             }
-            System.out.println("------------------------------------------");
 
             String fname = f.getAbsolutePath() + "/" + ts + ".csv";
             File tf = new File(fname);
@@ -298,7 +297,7 @@ public class HOSM_Select {
                 fileWriter.write(r + "\n");
             }
             fileWriter.close();
-            System.out.printf("%s: %d records", ts,rs.size() );
+            System.out.printf("%s: %d records \n", ts,rs.size() );
         }
     }
 
@@ -312,7 +311,7 @@ public class HOSM_Select {
             f.mkdir();
         }
 
-        String[] tags = new String[]{"shop", "building:commercial"};
+        String[] tags = new String[]{"shop"};
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
         String start_time_str = "20100101";
