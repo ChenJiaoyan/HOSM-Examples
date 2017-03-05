@@ -204,20 +204,12 @@ public class HOSM_Select {
         * tags is an index array of [key,value, key,value, ...] order by key!
         */
         private boolean hasKeyValue(int[] tags, ArrayList<int[]> tag_ids) {
-            for (int[] tag_id : tag_ids) {
-                for (int i = 0; i < tags.length; i += 2) {
-                    if (tags[i] == tag_id[0]) {
-                        if (tag_id[1] == -1) {
-                            return true;
-                        } else {
-                            if (tags[i + 1] == tag_id[1]) {
-                                return true;
-                            } else {
-                                return false;
-                            }
-                        }
+            for (int i = 0; i < tags.length; i += 2) {
+                for (int[] tag_id : tag_ids) {
+                    if (tags[i] == tag_id[0] &&
+                            (tag_id[1] == -1 || tags[i + 1] == tag_id[1])) {
+                        return true;
                     }
-                    return false;
                 }
             }
             return false;
@@ -231,8 +223,8 @@ public class HOSM_Select {
         IgniteConfiguration icfg = IgnitionEx.loadConfiguration("ignite.xml").getKey();
         try (Ignite ignite = Ignition.start(icfg)) {
             ArrayList<int[]> tag_ids = get_tag_id(ignite, tags);
-            for(int [] tag_id:tag_ids){
-                System.out.printf("key_id: %d, value_id: %d",tag_id[0],tag_id[1]);
+            for (int[] tag_id : tag_ids) {
+                System.out.printf("key_id: %d, value_id: %d \n", tag_id[0], tag_id[1]);
             }
             if (tag_ids != null && tag_ids.size() > 0) {
                 WKTReader r = new WKTReader();
@@ -287,7 +279,7 @@ public class HOSM_Select {
             ArrayList<String> rs = results.get(t);
             Date resultdate = new Date(t);
             String ts = formatter.format(resultdate);
-            if(rs==null) {
+            if (rs == null) {
                 System.out.println(ts + ": 0 records");
                 continue;
             }
@@ -300,7 +292,7 @@ public class HOSM_Select {
                 fileWriter.write(r + "\n");
             }
             fileWriter.close();
-            System.out.printf("%s: %d records \n", ts,rs.size() );
+            System.out.printf("%s: %d records \n", ts, rs.size());
         }
     }
 
@@ -314,7 +306,7 @@ public class HOSM_Select {
             f.mkdir();
         }
 
-        String[] tags = new String[]{"shop","building:commercial"};
+        String[] tags = new String[]{"shop", "building:commercial"};
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
         String start_time_str = "20100101";
