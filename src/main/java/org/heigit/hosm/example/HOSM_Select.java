@@ -292,7 +292,7 @@ public class HOSM_Select {
         return new int[]{tag_k_n, tag_v_n};
     }
 
-    private void save2file(String dir, ArrayList<Long> times, Map<Long, ArrayList<String>> results){
+    private void save2file(File f, ArrayList<Long> times, Map<Long, ArrayList<String>> results){
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
         for(int i=0; i<times.size();i++){
@@ -300,6 +300,8 @@ public class HOSM_Select {
             ArrayList<String> rs = results.get(t);
             Date resultdate = new Date(t);
             String ts = formatter.format(resultdate);
+            String fname = f.getAbsolutePath() + ts;
+            System.out.printf("%s \n", fname);
         }
     }
 
@@ -312,6 +314,7 @@ public class HOSM_Select {
         }else{
             f.mkdir();
         }
+
 
         String tagKey = "shop";
 
@@ -337,7 +340,7 @@ public class HOSM_Select {
         HOSM_Select client = new HOSM_Select();
         Map<Long, ArrayList<String>> results = client.spatial_temporal_select(tagKey, times, polygon_str);
 
-//        client.save2file(dir,times,results);
+        client.save2file(f,times,results);
     }
 
 
