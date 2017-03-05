@@ -238,11 +238,6 @@ public class HOSM_Select {
     }
 
 
-    public Map<Long, ArrayList<String>> spatial_temporal_select(String tagKey, ArrayList<Long> times_arr, String polygon_str
-    ) throws ParseException, com.vividsolutions.jts.io.ParseException, IgniteCheckedException {
-        String[] obj_types = new String[]{"node","way"};
-        return spatial_temporal_select(tagKey, null, times_arr, polygon_str, obj_types);
-    }
 
     public Map<Long, ArrayList<String>> spatial_temporal_select(String tagKey, String tagValue, ArrayList<Long> times_arr,String polygon_str,
                                                                 String[] obj_types) throws ParseException, com.vividsolutions.jts.io.ParseException, IgniteCheckedException {
@@ -301,7 +296,7 @@ public class HOSM_Select {
             ArrayList<String> rs = results.get(t);
             Date resultdate = new Date(t);
             String ts = formatter.format(resultdate);
-            String fname = f.getAbsolutePath() + "/" + ts;
+            String fname = f.getAbsolutePath() + "/" + ts + ".csv";
             File tf = new File(fname);
             tf.createNewFile();
             FileWriter fileWriter = new FileWriter(tf);
@@ -324,7 +319,7 @@ public class HOSM_Select {
         }
 
 
-        String tagKey = "shop";
+        String [] tags = {"shop:","building:commercial"};
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
         String start_time_str = "20100101";
@@ -343,10 +338,12 @@ public class HOSM_Select {
 
         String polygon_str = "POLYGON((117.762451171875 32.12154573409534,122.530517578125 32.12154573409534," +
                 "122.530517578125 28.199742006199717,117.762451171875 28.199742006199717,117.762451171875 32.12154573409534))";
+        String[] obj_types = new String[]{"node","way"};
 
-        System.out.println("#### select the objects with tag key '" + tagKey + "' #####");
+        System.out.println("#### select the objects with tags: '" + Arrays.toString(tags) + "' #####");
         HOSM_Select client = new HOSM_Select();
-        Map<Long, ArrayList<String>> results = client.spatial_temporal_select(tagKey, times, polygon_str);
+
+        Map<Long, ArrayList<String>> results = client.spatial_temporal_select(tags[0], null, times, polygon_str, obj_types);
 
         client.save2file(f,times,results);
     }
