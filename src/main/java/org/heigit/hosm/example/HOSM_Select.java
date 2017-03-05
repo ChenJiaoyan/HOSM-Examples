@@ -74,7 +74,7 @@ public class HOSM_Select {
         public SelectJob(JobOption option) {
             this.option = option;
             this.localMode = true;
-            this.object_types = new String[]{"way", "node"};
+            this.object_types = new String[]{"way", "node", "relation"};
         }
 
         public SelectJob(final JobOption option, Ignite ignite, final boolean localMode) {
@@ -103,6 +103,7 @@ public class HOSM_Select {
                         result = printNode(result);
                         break;
                     case "relation":
+                        System.out.printf("in relation \n");
                         result = printRelation(result);
                         break;
                     default:
@@ -375,6 +376,7 @@ public class HOSM_Select {
 
         String polygon_str = "POLYGON((117.762451171875 32.12154573409534,122.530517578125 32.12154573409534," +
                 "122.530517578125 28.199742006199717,117.762451171875 28.199742006199717,117.762451171875 32.12154573409534))";
+
         String[] obj_types = new String[]{"node", "way", "relation"};
 
         System.out.println("#### select the objects with tags: '" + Arrays.toString(tags) + "' #####");
