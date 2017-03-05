@@ -156,7 +156,6 @@ public class HOSM_Select {
                     for (Map.Entry<Long, OSMNode> timestampNode : timestampNodeMap.entrySet()) {
                         Long timestamp = timestampNode.getKey();
                         OSMNode node = timestampNode.getValue();
-
                         if (hasKeyValue(node.getTags(), option.tag_ids)) {
                             double lat = node.getLatitude() * GEOM_PRECISION;
                             double lon = node.getLongitude() * GEOM_PRECISION;
