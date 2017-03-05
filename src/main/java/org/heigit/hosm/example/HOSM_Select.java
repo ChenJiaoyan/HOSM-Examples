@@ -94,6 +94,7 @@ public class HOSM_Select {
         @Override
         public Object execute() throws IgniteException {
             Map<Long, ArrayList<String>> result = new HashMap<>(option.timestamps.size());
+            System.out.printf("%s n", Arrays.toString(this.object_types));
             for (int i = 0; i < this.object_types.length; i++) {
                 switch (object_types[i]) {
                     case "way":
