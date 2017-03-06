@@ -395,7 +395,7 @@ public class HOSM_Select {
                 "122.530517578125 28.199742006199717,117.762451171875 28.199742006199717,117.762451171875 32.12154573409534))";
 
         String[] obj_types = new String[]{"node", "way", "relation"};
-        boolean any_tags = true;
+        boolean any_tags = false;
 
         System.out.println("#### select the objects with tags: '" + Arrays.toString(tags) + "' #####");
         HOSM_Select client = new HOSM_Select();
