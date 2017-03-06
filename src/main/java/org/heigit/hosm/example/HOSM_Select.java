@@ -43,11 +43,20 @@ public class HOSM_Select {
         private final List<Long> timestamps;
         private final Geometry bbox;
         private final ArrayList<int[]> tag_ids;
+        private final boolean any_tags;
 
         public JobOption(final List<Long> timestamps, final Geometry bbox, final ArrayList<int[]> tag_ids) {
             this.timestamps = timestamps;
             this.bbox = bbox;
             this.tag_ids = tag_ids;
+            this.any_tags = false;
+        }
+
+        public JobOption(final List<Long> timestamps, final Geometry bbox, final ArrayList<int[]> tag_ids, final boolean any_tags) {
+            this.timestamps = timestamps;
+            this.bbox = bbox;
+            this.tag_ids = tag_ids;
+            this.any_tags = any_tags;
         }
 
     }
@@ -130,11 +139,10 @@ public class HOSM_Select {
                         double x = c[0].x;
                         double y = c[0].y;
                         int[] relation_tags = relation.getTags();
-                        if (hasKeyValue(relation_tags, option.tag_ids)) {
+                        if (hasKeyValue(option.any_tags, relation_tags, option.tag_ids)) {
                             String tags_s = tags2string(relation_tags);
                             String relation_id = relation.toString().split(" ")[1].split(":")[1];
                             String s = String.format("relation,%s,,,%s", relation_id, tags_s);
-                            //System.out.printf("relation_id: %s, %f,%f \n",relation_id,x,y);
                             if (result.containsKey(timestamp)) {
                                 ArrayList<String> r = result.get(timestamp);
                                 r.add(s);
@@ -170,7 +178,7 @@ public class HOSM_Select {
                         double lon = c[0].x;
                         double lat = c[0].y;
                         int[] way_tags = way.getTags();
-                        if (hasKeyValue(way_tags, option.tag_ids)) {
+                        if (hasKeyValue(option.any_tags,way_tags, option.tag_ids)) {
                             String tags_s = tags2string(way_tags);
                             String way_id = way.toString().split(" ")[1].split(":")[1];
                             String s = "";
@@ -179,7 +187,6 @@ public class HOSM_Select {
                             }else{
                                 s = String.format("way,%s,%f,%f,%s", way_id, lat,lon,tags_s);
                             }
-                            //System.out.printf("way_id: %s, %f,%f \n",way_id,x,y);
                             if (result.containsKey(timestamp)) {
                                 ArrayList<String> r = result.get(timestamp);
                                 r.add(s);
@@ -212,7 +219,7 @@ public class HOSM_Select {
                     for (Map.Entry<Long, OSMNode> timestampNode : timestampNodeMap.entrySet()) {
                         Long timestamp = timestampNode.getKey();
                         OSMNode node = timestampNode.getValue();
-                        if (hasKeyValue(node.getTags(), option.tag_ids)) {
+                        if (hasKeyValue(option.any_tags, node.getTags(), option.tag_ids)) {
                             double lat = node.getLatitude() * GEOM_PRECISION;
                             double lon = node.getLongitude() * GEOM_PRECISION;
                             int[] tags = node.getTags();
@@ -259,7 +266,10 @@ public class HOSM_Select {
         /*
         * tags is an index array of [key,value, key,value, ...] order by key!
         */
-        private boolean hasKeyValue(int[] tags, ArrayList<int[]> tag_ids) {
+        private boolean hasKeyValue(boolean any_tags, int[] tags, ArrayList<int[]> tag_ids) {
+            if(any_tags){
+                return true;
+            }
             for (int i = 0; i < tags.length; i += 2) {
                 for (int[] tag_id : tag_ids) {
                     if (tags[i] == tag_id[0] &&
@@ -273,7 +283,7 @@ public class HOSM_Select {
     }
 
 
-    public Map<Long, ArrayList<String>> spatial_temporal_select(String[] tags, ArrayList<Long> times_arr, String polygon_str,
+    public Map<Long, ArrayList<String>> spatial_temporal_select(String[] tags, boolean any_tags, ArrayList<Long> times_arr, String polygon_str,
                                                                 String[] obj_types) throws ParseException, com.vividsolutions.jts.io.ParseException, IgniteCheckedException {
         Ignition.setClientMode(true);
         IgniteConfiguration icfg = IgnitionEx.loadConfiguration("ignite.xml").getKey();
@@ -285,7 +295,7 @@ public class HOSM_Select {
             if (tag_ids != null && tag_ids.size() > 0) {
                 WKTReader r = new WKTReader();
                 Geometry bbox = r.read(polygon_str);
-                JobOption option = new JobOption(times_arr, bbox, tag_ids);
+                JobOption option = new JobOption(times_arr, bbox, tag_ids, any_tags);
                 IgniteCompute compute = ignite.compute(ignite.cluster().forRemotes());
                 SelectJob myJob = new SelectJob(option, ignite, false, obj_types);
                 JobResult result = (JobResult) myJob.execute();
@@ -385,10 +395,11 @@ public class HOSM_Select {
                 "122.530517578125 28.199742006199717,117.762451171875 28.199742006199717,117.762451171875 32.12154573409534))";
 
         String[] obj_types = new String[]{"node", "way", "relation"};
+        boolean any_tags = true;
 
         System.out.println("#### select the objects with tags: '" + Arrays.toString(tags) + "' #####");
         HOSM_Select client = new HOSM_Select();
-        Map<Long, ArrayList<String>> results = client.spatial_temporal_select(tags, times, polygon_str, obj_types);
+        Map<Long, ArrayList<String>> results = client.spatial_temporal_select(tags, any_tags,times, polygon_str, obj_types);
 
         client.save2file(f, times, results);
     }
