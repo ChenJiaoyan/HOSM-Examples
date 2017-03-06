@@ -103,12 +103,15 @@ public class HOSM_Select {
             for (int i = 0; i < this.object_types.length; i++) {
                 switch (object_types[i]) {
                     case "way":
+                        System.out.printf("------------ print way --------------\n");
                         result = printWay(result);
                         break;
                     case "node":
+                        System.out.printf("------------ print node -------------\n");
                         result = printNode(result);
                         break;
                     case "relation":
+                        System.out.printf("------------ print relation -------------\n");
                         result = printRelation(result);
                         break;
                     default:
@@ -341,7 +344,7 @@ public class HOSM_Select {
     private void save2file(File f, ArrayList<Long> times, Map<Long, ArrayList<String>> results) throws IOException {
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        String fname = f.getAbsolutePath() + "/hangzhou_shop_201001_201703.csv";
+        String fname = f.getAbsolutePath() + "/hangzhou_201001_201703.csv";
         File tf = new File(fname);
         tf.createNewFile();
         FileWriter fileWriter = new FileWriter(tf);
@@ -374,12 +377,12 @@ public class HOSM_Select {
         }
 
         String[] tags = new String[]{"shop", "disused:shop", "shop_1", "old_shop", "was_shop"};
-        boolean any_tags = false;
+        boolean any_tags = true;
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
         String start_time_str = "20100101";
         String end_time_str = "20170301";
-        int step_month = 1;
+        int step_month = 12;
 
         ArrayList<Long> times = new ArrayList<>();
         Calendar it = Calendar.getInstance();
