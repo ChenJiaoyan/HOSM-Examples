@@ -256,9 +256,11 @@ public class HOSM_Select {
                     OSMTag tag = cacheTags.get(key_id);
                     String key_str = null;
                     String value_str = null;
+                    System.out.printf("%s %s \n", tag.getKey(), tag.getValue(value_id));
                     try {
                         key_str = new String(tag.getKey().getBytes(),"utf-8");
                         value_str = new String(tag.getValue(value_id).getBytes(),"utf-8");
+                        System.out.printf("%s %s \n", key_str,value_str);
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
@@ -362,7 +364,6 @@ public class HOSM_Select {
             }
 
             for (String r : rs) {
-                System.out.println(r);
                 fileWriter.write(ts + "," + r + "\n");
             }
             System.out.printf("%s: %d records \n", ts, rs.size());
