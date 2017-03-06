@@ -250,7 +250,7 @@ public class HOSM_Select {
                     int key_id = tags[i];
                     int value_id = tags[i + 1];
                     OSMTag tag = cacheTags.get(key_id);
-                    s = s + String.format("\"%s\":\"%s\"", tag.getKey(), tag.getValue(value_id)) + ";";
+                    s = s + String.format("'%s':'%s'", tag.getKey(), tag.getValue(value_id)) + ";";
                 }
                 return s;
             }
