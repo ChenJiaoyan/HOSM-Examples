@@ -362,6 +362,7 @@ public class HOSM_Select {
             }
 
             for (String r : rs) {
+                System.out.println(r);
                 fileWriter.write(ts + "," + r + "\n");
             }
             System.out.printf("%s: %d records \n", ts, rs.size());
