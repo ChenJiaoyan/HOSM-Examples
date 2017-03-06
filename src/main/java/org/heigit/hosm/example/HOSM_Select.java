@@ -22,10 +22,7 @@ import org.heigit.bigspatialdata.osh.ignite.model.osm.OSMTag;
 import org.heigit.bigspatialdata.osh.ignite.model.osm.OSMWay;
 
 import javax.cache.Cache;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Serializable;
+import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -257,7 +254,15 @@ public class HOSM_Select {
                     int key_id = tags[i];
                     int value_id = tags[i + 1];
                     OSMTag tag = cacheTags.get(key_id);
-                    s = s + String.format("'%s':'%s'", tag.getKey(), tag.getValue(value_id)) + ";";
+                    String key_str = null;
+                    String value_str = null;
+                    try {
+                        key_str = new String(tag.getKey().getBytes(),"utf-8");
+                        value_str = new String(tag.getValue(value_id).getBytes(),"utf-8");
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                    s = s + String.format("'%s':'%s'", key_str, value_str) + ";";
                 }
                 return s;
             }
