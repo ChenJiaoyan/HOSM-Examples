@@ -254,16 +254,8 @@ public class HOSM_Select {
                     int key_id = tags[i];
                     int value_id = tags[i + 1];
                     OSMTag tag = cacheTags.get(key_id);
-                    String key_str = null;
-                    String value_str = null;
-                    System.out.printf("%s %s \n", tag.getKey(), tag.getValue(value_id));
-                    try {
-                        key_str = new String(tag.getKey().getBytes(),"utf-8");
-                        value_str = new String(tag.getValue(value_id).getBytes(),"utf-8");
-                        System.out.printf("%s %s \n", key_str,value_str);
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
+                    String key_str = tag.getKey();
+                    String value_str = tag.getValue(value_id);
                     s = s + String.format("'%s':'%s'", key_str, value_str) + ";";
                 }
                 return s;
@@ -382,6 +374,7 @@ public class HOSM_Select {
         }
 
         String[] tags = new String[]{"shop", "disused:shop", "shop_1", "old_shop", "was_shop"};
+        boolean any_tags = false;
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
         String start_time_str = "20100101";
@@ -402,7 +395,6 @@ public class HOSM_Select {
                 "122.530517578125 28.199742006199717,117.762451171875 28.199742006199717,117.762451171875 32.12154573409534))";
 
         String[] obj_types = new String[]{"node", "way", "relation"};
-        boolean any_tags = false;
 
         System.out.println("#### select the objects with tags: '" + Arrays.toString(tags) + "' #####");
         HOSM_Select client = new HOSM_Select();
