@@ -250,7 +250,7 @@ public class HOSM_Select {
                     int key_id = tags[i];
                     int value_id = tags[i + 1];
                     OSMTag tag = cacheTags.get(key_id);
-                    s = s + String.format("%s;%s", tag.getKey(), tag.getValue(value_id)) + " ";
+                    s = s + String.format("\"%s\":\"%s\"", tag.getKey(), tag.getValue(value_id)) + ";";
                 }
                 return s;
             }
@@ -311,9 +311,10 @@ public class HOSM_Select {
             int key_id = ((Integer) rows.get(0).get(0)).intValue();
             Object[] values = (Object[]) rows.get(0).get(1);
 
-            if (tag.split(";").length > 1) {
-                String value = tag.split(";")[1];
-                String[] value_split = tag.split(";")[1].split(",");
+            String [] tag_split = tag.split(";");
+            if (tag_split.length > 1) {
+                String value = tag_split[1];
+                String[] value_split = tag_split[1].split(",");
                 Arrays.sort(value_split);
                 for (int i = 0; i < values.length; i++) {
                     String value_i = (String) values[i];
@@ -330,7 +331,11 @@ public class HOSM_Select {
 
     private void save2file(File f, ArrayList<Long> times, Map<Long, ArrayList<String>> results) throws IOException {
 
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String fname = f.getAbsolutePath() + "/hangzhou_shop_201001_201703.csv";
+        File tf = new File(fname);
+        tf.createNewFile();
+        FileWriter fileWriter = new FileWriter(tf);
         for (int i = 0; i < times.size(); i++) {
             long t = times.get(i);
             ArrayList<String> rs = results.get(t);
@@ -341,24 +346,20 @@ public class HOSM_Select {
                 continue;
             }
 
-            String fname = f.getAbsolutePath() + "/" + ts + ".csv";
-            File tf = new File(fname);
-            tf.createNewFile();
-            FileWriter fileWriter = new FileWriter(tf);
             for (String r : rs) {
-                fileWriter.write(r + "\n");
+                fileWriter.write(ts + "," + r + "\n");
             }
-            fileWriter.close();
             System.out.printf("%s: %d records \n", ts, rs.size());
         }
+        fileWriter.close();
     }
 
     public static void main(String args[]) throws ParseException, IgniteCheckedException, com.vividsolutions.jts.io.ParseException, IOException {
         String dir = args[0];
         File f = new File(dir);
         if (f.exists()) {
-            System.out.printf("the output exist \n");
-            System.exit(0);
+            System.out.printf("overwrite the current data \n");
+         //   System.exit(0);
         } else {
             f.mkdir();
         }
